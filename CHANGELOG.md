@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.5](https://github.com/francisdb/vpxtool-gui/compare/v0.23.4...v0.23.5) - 2025-04-15
+
+### Other
+
+- missed one more deprecated github action step
+
 ## [0.23.4](https://github.com/francisdb/vpxtool/compare/v0.23.3...v0.23.4) - 2025-04-15
 
 ### Other
