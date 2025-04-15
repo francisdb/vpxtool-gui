@@ -1,5 +1,7 @@
 # vpxtool-gui
 
+A graphical user interface for [vpxtool](https://github.com/francisdb/vpxtool). 
+
 The graphical frontend is tightly integrated with the command line interface. Therefor we suggest you start with
 the commandline tool to configure everything.
 
@@ -10,6 +12,14 @@ the commandline tool to configure everything.
 > vpxtool frontend
 # once everything works you can start the GUI 
 > vpxtool-gui
+```
+
+## Running
+
+For now you need to run this using the rust toolchain.
+
+```shell
+cargo run --release
 ```
 
 ## Building
