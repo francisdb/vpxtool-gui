@@ -17,9 +17,9 @@ use bevy_egui::EguiPlugin;
 use std::io;
 use std::process::ExitCode;
 
-use vpxtool_shared::config::ResolvedConfig;
-use vpxtool_shared::indexer::IndexedTable;
-use vpxtool_shared::vpinball_config::VPinballConfig;
+use vpxtool::config::ResolvedConfig;
+use vpxtool::indexer::IndexedTable;
+use vpxtool::vpinball_config::VPinballConfig;
 
 #[derive(Resource)]
 pub struct Config {

@@ -7,8 +7,7 @@ use bevy::prelude::*;
 use bevy_asset::{AssetServer, RecursiveDependencyLoadState, UntypedHandle};
 use crossbeam_channel::Sender;
 use std::thread;
-use vpxtool_shared::indexer;
-use vpxtool_shared::indexer::Progress;
+use vpxtool::indexer::Progress;
 
 const SLOW_LOADING: bool = false;
 
@@ -329,7 +328,7 @@ fn load_tables(
         let recursive = true;
         // TODO make a progress that sends events and update loading gui
         let progress = EventSendingProgress { sender: tx.clone() };
-        let index_result = indexer::index_folder(
+        let index_result = vpxtool::indexer::index_folder(
             recursive,
             &resolved_config.tables_folder,
             &resolved_config.tables_index_path,

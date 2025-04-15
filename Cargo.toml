@@ -1,21 +1,24 @@
-[workspace]
-members = [
-    "vpxtool_cli",
-    "vpxtool_gui",
-    "vpxtool_shared"
-]
-resolver = "2"
+[package]
+name = "vpxtool_gui"
+edition = "2024"
+
+[[bin]]
+name = "vpxtool-gui"
+path = "src/main.rs"
 
 
-[profile.test]
-# level 0 is very slow for writing to compound files
-# see https://github.com/mdsteele/rust-cfb/issues/42
-opt-level = 1
+[dependencies]
+vpxtool = "0.23.4"
+bevy = "0.15.3"
+bevy_asset = "0.15.1"
+bevy_dev_tools = "0.15.3"
+#bevy_asset_loader = "0.22.0"
+bevy_egui = "0.33.0"
+#eframe = "0.30.0"
+#egui_extras = { version = "0.30.0", features = ["image"] }
+crossbeam-channel = "0.5.15"
+is_executable = "1.0.4"
+sysinfo = "0.34.2"
 
-# Enable a small amount of optimization in the dev profile.
-[profile.dev]
-opt-level = 1
-
-# Enable a large amount of optimization in the dev profile for dependencies.
-[profile.dev.package."*"]
-opt-level = 3
+[dev-dependencies]
+pretty_assertions = "1.4.1"
