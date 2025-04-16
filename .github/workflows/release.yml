@@ -54,9 +54,8 @@ jobs:
         shell: bash
         run: |
           mkdir $ARCHIVE_DIR
-          cp target/release/vpxtool${{ matrix.platform.bin_ext }} $ARCHIVE_DIR
           cp target/release/vpxtool-gui${{ matrix.platform.bin_ext }} $ARCHIVE_DIR
-          cp -r vpxtool_gui/assets $ARCHIVE_DIR
+          cp -r assets $ARCHIVE_DIR
           if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]; then
             7z a $ARCHIVE_NAME $ARCHIVE_DIR
           else
