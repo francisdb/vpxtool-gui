@@ -18,9 +18,7 @@ jobs:
       matrix:
         platform:
           - os: ubuntu-latest
-          # https://github.com/actions/runner-images/issues/10980#issuecomment-2604245379
-          # - os: windows-latest
-          - os: windows-2025
+          - os: windows-latest
           - os: macos-latest
 
     runs-on: ${{ matrix.platform.os }}
