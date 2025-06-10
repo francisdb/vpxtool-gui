@@ -55,10 +55,9 @@ pub struct SystemInfo {
 pub mod internal {
     use bevy::app::{App, First, Startup, Update};
     use bevy::diagnostic::{Diagnostic, Diagnostics, DiagnosticsStore};
-    use bevy::ecs::system::Resource;
     use bevy::ecs::{prelude::ResMut, system::Local};
+    use bevy::prelude::{Resource, info};
     use bevy::tasks::{AsyncComputeTaskPool, Task, available_parallelism, block_on, poll_once};
-    use bevy::utils::tracing::info;
     use std::sync::Arc;
     use std::{sync::Mutex, time::Instant};
     use sysinfo::{CpuRefreshKind, MemoryRefreshKind, ProcessesToUpdate, RefreshKind, System};

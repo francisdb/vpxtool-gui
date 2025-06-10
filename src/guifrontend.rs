@@ -13,10 +13,10 @@ use crate::windowing;
 use crate::windowing::WindowingPlugin;
 use bevy::prelude::*;
 use bevy::window::*;
+use bevy_asset::UnapprovedPathMode;
 use bevy_egui::EguiPlugin;
 use std::io;
 use std::process::ExitCode;
-
 use vpxtool::config::ResolvedConfig;
 use vpxtool::indexer::IndexedTable;
 use vpxtool::vpinball_config::VPinballConfig;
@@ -79,12 +79,12 @@ fn quit_on_q_or_window_closed(
     mut app_exit_event_writer: EventWriter<AppExit>,
 ) {
     if keys.just_pressed(KeyCode::KeyQ) {
-        app_exit_event_writer.send(AppExit::Success);
+        app_exit_event_writer.write(AppExit::Success);
     }
     // closing any window closes the app
     for event in window_events.read() {
         if let WindowEvent::WindowCloseRequested(_) = event {
-            app_exit_event_writer.send(AppExit::Success);
+            app_exit_event_writer.write(AppExit::Success);
         }
     }
 }
@@ -105,7 +105,7 @@ fn handle_external_events(
                 info!("Event: {:?}", event);
                 globals.vpinball_running = false;
                 resume_music(&mut music_event_writer);
-                let mut window = window_query.single_mut();
+                let mut window = window_query.single_mut().expect("Primary window not found");
                 // info!("Window visibility: {}", window.visible);
                 // info!("Showing window");
                 // window.visible = true;
@@ -123,13 +123,13 @@ fn handle_external_events(
                 mark_tables_loaded(&mut next_state);
             }
             ChannelExternalEvent::ProgressLength(length) => {
-                table_loading_event_writer.send(TableLoadingEvent::Length(*length));
+                table_loading_event_writer.write(TableLoadingEvent::Length(*length));
             }
             ChannelExternalEvent::ProgressPosition(position) => {
-                table_loading_event_writer.send(TableLoadingEvent::Position(*position));
+                table_loading_event_writer.write(TableLoadingEvent::Position(*position));
             }
             ChannelExternalEvent::ProgressFinishAndClear => {
-                table_loading_event_writer.send(TableLoadingEvent::FinishAndClear);
+                table_loading_event_writer.write(TableLoadingEvent::FinishAndClear);
             }
         }
     }
@@ -165,11 +165,20 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             vpinball_running: false,
         })
         .insert_resource(ClearColor(Color::srgb(0.1, 0.1, 0.1)))
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(playfield_window),
-            ..Default::default()
-        }))
-        .add_plugins(EguiPlugin)
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(playfield_window),
+                    ..Default::default()
+                })
+                .set(AssetPlugin {
+                    unapproved_path_mode: UnapprovedPathMode::Deny,
+                    ..Default::default()
+                }),
+        )
+        .add_plugins(EguiPlugin {
+            enable_multipass_for_primary_context: true,
+        })
         .add_plugins(WindowingPlugin)
         .add_plugins(crate::event_channel::plugin)
         .add_plugins(music_plugin)
@@ -187,7 +196,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
     #[cfg(debug_assertions)]
     {
         app.add_plugins((
-            bevy::diagnostic::FrameTimeDiagnosticsPlugin,
+            bevy::diagnostic::FrameTimeDiagnosticsPlugin::default(),
             bevy::diagnostic::LogDiagnosticsPlugin {
                 debug: false,
                 wait_duration: std::time::Duration::from_secs(1),
@@ -214,12 +223,12 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         app.add_plugins(bevy_dev_tools::fps_overlay::FpsOverlayPlugin {
             config: bevy_dev_tools::fps_overlay::FpsOverlayConfig {
                 text_config: TextFont {
-                    font: Default::default(),
                     font_size: 8.0,
                     ..Default::default()
                 },
                 text_color: Color::WHITE,
                 enabled: true,
+                ..Default::default()
             },
         })
         .add_systems(Update, toggle_fps);

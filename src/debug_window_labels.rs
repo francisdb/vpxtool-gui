@@ -79,7 +79,7 @@ fn label_window(commands: &mut Commands, window_camera_entity: Entity, window: &
         Text::new(name),
         TextFont::from_font_size(8.0),
         window_label_node,
-        TargetCamera(window_camera_entity),
+        UiTargetCamera(window_camera_entity),
         LabelMarker,
     ));
 }

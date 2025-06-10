@@ -34,16 +34,17 @@ fn update_background_on_resize(
     mut meshes: ResMut<Assets<Mesh>>,
     query: Query<&Mesh2d, With<BackgroundGradient>>,
     window_query: Query<(Entity, &Window), With<PrimaryWindow>>,
-) {
+) -> Result<()> {
     for event in resize_events.read() {
-        let (primary_window_entity, primary_window) = window_query.single();
+        let (primary_window_entity, primary_window) = window_query.single()?;
         if event.window == primary_window_entity {
-            let background_mesh = query.single();
+            let background_mesh = query.single()?;
             if let Some(mesh) = meshes.get_mut(background_mesh) {
                 *mesh = window_mesh(primary_window);
             }
         }
     }
+    Ok(())
 }
 
 pub(crate) fn setup_gradient_background(
@@ -51,8 +52,8 @@ pub(crate) fn setup_gradient_background(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<GradientMaterial>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-) {
-    let primary_window = window_query.single();
+) -> Result<()> {
+    let primary_window = window_query.single()?;
     commands.spawn((
         BackgroundGradient,
         Mesh2d(meshes.add(window_mesh(primary_window))),
@@ -62,6 +63,7 @@ pub(crate) fn setup_gradient_background(
         })),
         Transform::from_xyz(0.0, 0.0, -2.0),
     ));
+    Ok(())
 }
 
 fn window_mesh(primary_window: &Window) -> Mesh {

@@ -19,7 +19,7 @@ pub(crate) fn show_info(
     if keys.just_pressed(KeyCode::Digit1) {
         globals.vpinball_running = !globals.vpinball_running;
     }
-    if let Ok(window) = window_query.get_single() {
+    if let Ok(window) = window_query.single() {
         let selected_item = selected_item_res.index.unwrap_or(0);
         let table = &tables.indexed_tables[selected_item];
 
