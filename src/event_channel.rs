@@ -36,7 +36,7 @@ pub(crate) fn forward_events_to_bevy(
 ) {
     let _event_writer = &events;
     for from_stream in receiver.try_iter() {
-        events.send(ExternalEvent(from_stream));
+        events.write(ExternalEvent(from_stream));
     }
 }
 

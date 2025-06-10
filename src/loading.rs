@@ -284,7 +284,7 @@ fn update_loading_screen(
 
 fn despawn_loading_screen(mut commands: Commands, query: Query<Entity, With<PartOfLoadingScreen>>) {
     for entity in query.iter() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
     // remove resources
     commands.remove_resource::<LoadingDialogBox>();

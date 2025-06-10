@@ -61,7 +61,7 @@ fn update_selected_wheel(
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
     // TODO only update if window size changes?
-    if let Ok(window) = window_query.get_single() {
+    if let Ok(window) = window_query.single() {
         let window_height = window.height();
         wheel_info.wheel_size = derive_wheel_size(window);
         let wheel_size = wheel_info.wheel_size;
@@ -100,12 +100,14 @@ pub(crate) fn create_wheels(
 
     // remove any existing wheels
     for entity in wheel_query.iter_mut() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 
     let tables = &vpx_tables.indexed_tables;
 
-    let window = window_query.single();
+    let window = window_query
+        .single()
+        .expect("Expected to find a single wheel window");
     wheel_info.wheel_size = derive_wheel_size(window);
     let wheel_size = wheel_info.wheel_size;
 
@@ -125,7 +127,7 @@ pub(crate) fn create_wheels(
             Some(path) => path.clone(),
             None => blank_path.clone(),
         };
-        let wheel_image_handle = asset_server.load(wheel_path.clone());
+        let wheel_image_handle = asset_server.load_override(wheel_path.clone());
         loading_data
             .loading_assets
             .push(wheel_image_handle.clone().into());

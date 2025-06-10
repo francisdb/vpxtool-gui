@@ -46,7 +46,7 @@ fn dmd_update(
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
     // TODO should only happen if the window is resized
-    if let Ok(window) = window_query.get_single() {
+    if let Ok(window) = window_query.single() {
         let width = window.width();
         let height = window.height();
         let wheel_size = wheel_info.wheel_size;
@@ -64,7 +64,7 @@ fn dmd_update(
 }
 
 fn create_dmd(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
-    let window = window_query.single();
+    let window = window_query.single().expect("Primary window not found");
     let window_width = window.width();
     let window_height = window.height();
     commands.spawn(DmdBundle {
@@ -87,13 +87,13 @@ fn create_dmd(mut commands: Commands, window_query: Query<&Window, With<PrimaryW
             ..default()
         },
 
-        boxshadow: BoxShadow {
+        boxshadow: BoxShadow (vec![ShadowStyle {
             color: GOLDENROD.into(),
             x_offset: Val::Px(0.),
             y_offset: Val::Px(0.),
             spread_radius: Val::Px(20.),
             blur_radius: Val::Px(2.),
-        },
+        }]),
         backgroundcolor: BackgroundColor(Color::srgba(0.5, 0.5, 0.5, 1.0)),
         borderradius: BorderRadius::new(
             // top left

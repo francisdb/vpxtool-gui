@@ -2,11 +2,11 @@ use crate::guifrontend::VpxConfig;
 use bevy::prelude::*;
 use bevy::render::camera::RenderTarget;
 use bevy::render::view::RenderLayers;
-use bevy::utils::HashMap;
 use bevy::window::{
     PrimaryWindow, WindowBackendScaleFactorChanged, WindowCreated, WindowMode, WindowRef,
     WindowResized, WindowResolution,
 };
+use std::collections::HashMap;
 use std::time::Duration;
 use vpxtool::vpinball_config::WindowType;
 use vpxtool::vpinball_config::{VPinballConfig, WindowInfo};
@@ -234,7 +234,11 @@ fn setup_playfield_window2(
             window_type,
         };
         commands
-            .entity(primary_window_query.single())
+            .entity(
+                primary_window_query
+                    .single()
+                    .expect("No primary window found"),
+            )
             .insert(vpx_window_info);
     }
 }
@@ -366,7 +370,8 @@ fn is_fullscreen_playfield(window_type: WindowType, window_info: &WindowInfo) ->
 
 fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: WindowType) {
     if is_fullscreen_playfield(window_type, window_info) {
-        window.mode = WindowMode::Fullscreen(MonitorSelection::Primary);
+        window.mode =
+            WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current);
         return;
     }
     let position = if let (Some(x), Some(y)) = (window_info.x, window_info.y) {
@@ -400,7 +405,7 @@ fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: Wind
         .fullscreen
         .unwrap_or(OTHER_SCREEN_FULLSCREEN_DEFAULT)
     {
-        WindowMode::Fullscreen(MonitorSelection::Primary)
+        WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current)
     } else {
         WindowMode::Windowed
     };

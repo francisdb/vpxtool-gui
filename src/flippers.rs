@@ -39,7 +39,7 @@ fn update_flippers(
 ) {
     // TODO resizing only when window is resized
     // TODO showing / hiding only when entering the loaded state
-    if let Ok(window) = window_query.get_single() {
+    if let Ok(window) = window_query.single() {
         let height = window.height();
 
         for (mut transform, mut visibility) in set.p0().iter_mut() {
@@ -68,7 +68,7 @@ pub(crate) fn create_flippers(
     asset_server: Res<AssetServer>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    let window = window_query.single();
+    let window = window_query.single().expect("Primary window not found");
     let window_width = window.width();
     let window_height = window.height();
 
