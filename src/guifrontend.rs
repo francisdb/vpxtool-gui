@@ -140,9 +140,8 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
     let vpinball_ini_path = &config.vpx_config;
     let vpinball_config = if vpinball_ini_path.exists() {
         VPinballConfig::read(vpinball_ini_path).map_err(|err| {
-            io::Error::new(
-                io::ErrorKind::Other,
-                format!("Error reading vpinball.ini: {}", err),
+            io::Error::other(
+                format!("Error reading vpinball.ini: {}", err)
             )
         })?
     } else {
