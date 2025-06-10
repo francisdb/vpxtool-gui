@@ -13,6 +13,7 @@ use crate::windowing;
 use crate::windowing::WindowingPlugin;
 use bevy::prelude::*;
 use bevy::window::*;
+use bevy_asset::UnapprovedPathMode;
 use bevy_egui::EguiPlugin;
 use std::io;
 use std::process::ExitCode;
@@ -164,10 +165,17 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             vpinball_running: false,
         })
         .insert_resource(ClearColor(Color::srgb(0.1, 0.1, 0.1)))
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(playfield_window),
-            ..Default::default()
-        }))
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(playfield_window),
+                    ..Default::default()
+                })
+                .set(AssetPlugin {
+                    unapproved_path_mode: UnapprovedPathMode::Deny,
+                    ..Default::default()
+                }),
+        )
         .add_plugins(EguiPlugin {
             enable_multipass_for_primary_context: true,
         })
