@@ -184,7 +184,7 @@ fn setup_other_window(commands: &mut Commands, vpx_config: &VpxConfig, window_ty
         info!("Window [{}] vpinball config {:?}", window_type, window_info);
         let mut window = Window {
             name: Some(window_type.to_string()),
-            title: format!("Vpxtool - {}", window_type),
+            title: format!("Vpxtool - {window_type}"),
             resizable: true,
             focused: false,
             decorations: false,
@@ -423,6 +423,6 @@ fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: Wind
 fn window_name(entity: Entity, window: &Window) -> String {
     match &window.name {
         Some(name) => name.clone(),
-        None => format!("unnamed/{}", entity),
+        None => format!("unnamed/{entity}"),
     }
 }

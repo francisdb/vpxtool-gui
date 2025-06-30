@@ -44,7 +44,7 @@ fn update_flippers(
 
         for (mut transform, mut visibility) in set.p0().iter_mut() {
             transform.translation = Vec3::new(
-                (wheel_info.wheel_size / 2.) * -1.0,
+                -(wheel_info.wheel_size / 2.),
                 (-(height / 2.)) + (wheel_info.wheel_size / 4.),
                 Z_LEVEL,
             );

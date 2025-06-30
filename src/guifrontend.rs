@@ -140,7 +140,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
     let vpinball_ini_path = &config.vpx_config;
     let vpinball_config = if vpinball_ini_path.exists() {
         VPinballConfig::read(vpinball_ini_path)
-            .map_err(|err| io::Error::other(format!("Error reading vpinball.ini: {}", err)))?
+            .map_err(|err| io::Error::other(format!("Error reading vpinball.ini: {err}")))?
     } else {
         // FIXME logging is not set up at this point so this is not visible
         //   however we need this window set up before we can launch the default window plugin

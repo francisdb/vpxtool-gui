@@ -46,7 +46,7 @@ fn launch(selected_path: &Path, vpinball_executable: &Path, fullscreen: Option<b
                 );
             }
             Some(code) => {
-                eprintln!("Visual Pinball exited with code {}", code);
+                eprintln!("Visual Pinball exited with code {code}");
             }
             None => {
                 eprintln!("Visual Pinball exited with unknown code");
@@ -59,14 +59,14 @@ fn launch(selected_path: &Path, vpinball_executable: &Path, fullscreen: Option<b
                     vpinball_executable.display()
                 ));
             } else {
-                report_and_exit(format!("Unable to launch table: {:?}", e));
+                report_and_exit(format!("Unable to launch table: {e:?}"));
             }
         }
     }
 }
 
 fn report_and_exit(msg: String) -> ! {
-    eprintln!("CRASH {}", msg);
+    eprintln!("CRASH {msg}");
     exit(1);
 }
 
