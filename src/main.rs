@@ -5,7 +5,7 @@ use vpxtool_gui::guifrontend;
 
 fn main() -> ExitCode {
     run().unwrap_or_else(|err| {
-        eprintln!("Error: {}", err);
+        eprintln!("Error: {err}");
         ExitCode::FAILURE
     })
 }
@@ -16,7 +16,7 @@ fn run() -> io::Result<ExitCode> {
         guifrontend::guifrontend(resolved_config.clone())
     } else {
         let warning = "No config file found. Run vpxtool to create one.";
-        eprintln!("{}", warning);
+        eprintln!("{warning}");
         Ok(ExitCode::FAILURE)
     }
 }
