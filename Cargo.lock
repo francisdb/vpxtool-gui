@@ -757,13 +757,14 @@ dependencies = [
 
 [[package]]
 name = "bevy_egui"
-version = "0.34.1"
+version = "0.35.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a3d58a8afdb6100bca50251043a85320391742cae125d559f6cca3a16b84cdd"
+checksum = "dd67c9ddb60d10926899c3eaa022aee43fb92ba507191c62e1ff935b323c5a98"
 dependencies = [
  "arboard",
  "bevy_app",
  "bevy_asset",
+ "bevy_core_pipeline",
  "bevy_derive",
  "bevy_ecs",
  "bevy_image",
@@ -775,6 +776,7 @@ dependencies = [
  "bevy_reflect",
  "bevy_render",
  "bevy_time",
+ "bevy_transform",
  "bevy_window",
  "bevy_winit",
  "bytemuck",
