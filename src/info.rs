@@ -1,7 +1,7 @@
 use crate::guifrontend::VpxTables;
 use crate::list::{SelectedItem, display_table_line};
 use bevy::input::ButtonInput;
-use bevy::prelude::{KeyCode, Query, Res, ResMut, Window, With};
+use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy_egui::egui::Align2;
 use bevy_egui::{EguiContexts, egui};
@@ -14,7 +14,7 @@ pub(crate) fn show_info(
     window_query: Query<&Window, With<PrimaryWindow>>,
     contexts: EguiContexts,
     tables: Res<VpxTables>,
-) {
+) -> Result {
     // TODO why is this modifying a unrelated global?
     if keys.just_pressed(KeyCode::Digit1) {
         globals.vpinball_running = !globals.vpinball_running;
@@ -33,13 +33,19 @@ pub(crate) fn show_info(
 
         // FIXME, this keeps creating windows???
         if globals.vpinball_running {
-            create_info_box(window, contexts, wtitle, gametext.to_owned());
+            create_info_box(window, contexts, wtitle, gametext.to_owned())?;
         };
     }
+    Ok(())
 }
 
 #[allow(clippy::too_many_arguments)]
-fn create_info_box(window: &Window, mut contexts: EguiContexts, wtitle: String, wtext: String) {
+fn create_info_box(
+    window: &Window,
+    mut contexts: EguiContexts,
+    wtitle: String,
+    wtext: String,
+) -> Result {
     let width = window.resolution.width();
     let height = window.resolution.height();
 
@@ -52,7 +58,8 @@ fn create_info_box(window: &Window, mut contexts: EguiContexts, wtitle: String, 
         .min_width(500.0)
         .min_height(500.0)
         .pivot(Align2::LEFT_TOP)
-        .show(contexts.ctx_mut(), |ui| {
+        .show(contexts.ctx_mut()?, |ui| {
             ui.add(egui::Label::wrap(egui::Label::new(&wtext)));
         });
+    Ok(())
 }

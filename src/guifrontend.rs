@@ -176,9 +176,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
                     ..Default::default()
                 }),
         )
-        .add_plugins(EguiPlugin {
-            enable_multipass_for_primary_context: true,
-        })
+        .add_plugins(EguiPlugin::default())
         .add_plugins(WindowingPlugin)
         .add_plugins(crate::event_channel::plugin)
         .add_plugins(music_plugin)
