@@ -39,15 +39,15 @@ fn music_startup(asset_server: Res<AssetServer>, mut commands: Commands) {
 }
 
 fn music_update(music_box_query: Query<&AudioSink>, keys: Res<ButtonInput<KeyCode>>) {
-    if let Ok(sink) = music_box_query.single() {
-        if keys.just_pressed(KeyCode::KeyM) {
-            if sink.is_paused() {
-                info!("Playing music");
-                sink.play()
-            } else {
-                info!("Pausing music");
-                sink.pause()
-            }
+    if let Ok(sink) = music_box_query.single()
+        && keys.just_pressed(KeyCode::KeyM)
+    {
+        if sink.is_paused() {
+            info!("Playing music");
+            sink.play()
+        } else {
+            info!("Pausing music");
+            sink.pause()
         }
     }
 }
