@@ -13,7 +13,7 @@ bevy = "0.16.1"
 bevy_asset = "0.16.1"
 bevy_dev_tools = "0.16.1"
 #bevy_asset_loader = "0.22.0"
-bevy_egui = "0.35.1"
+bevy_egui = "0.36.0"
 #eframe = "0.30.0"
 #egui_extras = { version = "0.30.0", features = ["image"] }
 crossbeam-channel = "0.5.15"
