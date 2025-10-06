@@ -107,7 +107,7 @@ fn create_dmd(mut commands: Commands, window_query: Query<&Window, With<PrimaryW
         ),
         dmd: Dmd,
         text_layout: TextLayout {
-            justify: JustifyText::Center,
+            justify: Justify::Center,
             linebreak: LineBreak::WordBoundary,
         },
         //text_layout: TextLayout::new_with_justify(JustifyText::Center).with_no_wrap(),

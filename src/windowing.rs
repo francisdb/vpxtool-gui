@@ -1,7 +1,7 @@
 use crate::guifrontend::VpxConfig;
+use bevy::camera::RenderTarget;
+use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::*;
-use bevy::render::camera::RenderTarget;
-use bevy::render::view::RenderLayers;
 use bevy::window::{
     PrimaryWindow, WindowBackendScaleFactorChanged, WindowCreated, WindowMode, WindowRef,
     WindowResized, WindowResolution,
@@ -58,7 +58,7 @@ struct ResizedWindows {
 }
 
 fn log_window_moved(
-    mut events: EventReader<WindowMoved>,
+    mut events: MessageReader<WindowMoved>,
     window_query: Query<(Entity, &Window)>,
     time: Res<Time>,
     mut timer: Local<Timer>,
@@ -72,7 +72,7 @@ fn log_window_moved(
         timer.set_duration(Duration::from_millis(500));
     }
 
-    if timer.finished() {
+    if timer.is_finished() {
         for (moved_window, position) in moved_windows.windows.iter() {
             if let Some((entity, window)) = window_query
                 .iter()
@@ -87,8 +87,8 @@ fn log_window_moved(
 }
 
 fn log_window_resized(
-    mut events: EventReader<WindowResized>,
-    mut scale_events: EventReader<WindowBackendScaleFactorChanged>,
+    mut events: MessageReader<WindowResized>,
+    mut scale_events: MessageReader<WindowBackendScaleFactorChanged>,
     window_query: Query<(Entity, &Window)>,
     time: Res<Time>,
     mut timer: Local<Timer>,
@@ -121,7 +121,7 @@ fn log_window_resized(
         timer.set_duration(Duration::from_millis(500));
     }
 
-    if timer.finished() {
+    if timer.is_finished() {
         for (resized_window, resized) in resized_windows.windows.iter() {
             if let Some((entity, window)) = window_query
                 .iter()
@@ -264,7 +264,7 @@ pub(crate) struct VpxWindowInfo {
 
 /// NOTE: This is NOT triggered on startup for the primary window creation.
 fn resize_on_crated(
-    mut window_created_event_reader: EventReader<WindowCreated>,
+    mut window_created_event_reader: MessageReader<WindowCreated>,
     mut window_query: Query<(Entity, &VpxWindowInfo, &mut Window)>,
 ) {
     for event in window_created_event_reader.read() {
@@ -319,6 +319,12 @@ fn correct_window_size_and_position(
                     window.position = WindowPosition::At(IVec2::new(x as i32, y as i32));
                 }
                 //window.set_changed();
+            } else {
+                warn!(
+                    "Window [{}] missing width/height in vpinball config, using default 1024x576",
+                    window_name
+                );
+                window.resolution.set(1024.0, 576.0);
             }
         }
     }
@@ -389,7 +395,7 @@ fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: Wind
     let resolution = if cfg!(not(target_os = "linux")) {
         window.resolution = WindowResolution::default();
         if let (Some(width), Some(height)) = (window_info.width, window_info.height) {
-            WindowResolution::new(width as f32, height as f32)
+            WindowResolution::new(width, height)
         } else {
             WindowResolution::default()
         }
@@ -398,7 +404,7 @@ fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: Wind
         // TODO since these sizes are seen as logical sizes, we start with a very small size no to have repositioning
         // Then on the WindowCreated event we will resize the window to the correct size
         // see https://github.com/bevyengine/bevy/issues/17563
-        WindowResolution::new(100.0, 100.0)
+        WindowResolution::new(100, 100)
     };
 
     let mode = if window_info

@@ -1,7 +1,6 @@
-use bevy::audio::Volume;
 use bevy::prelude::*;
 
-#[derive(Event)]
+#[derive(Message)]
 pub enum ControlMusicEvent {
     Suspend,
     Resume,
@@ -13,17 +12,17 @@ struct MusicState {
 }
 
 pub(crate) fn music_plugin(app: &mut App) {
-    app.add_event::<ControlMusicEvent>();
+    app.add_message::<ControlMusicEvent>();
     app.insert_resource(MusicState::default());
     app.add_systems(Startup, music_startup);
     app.add_systems(Update, (music_update, volume_update, handle_music_events));
 }
 
-pub(crate) fn suspend_music(event_writer: &mut EventWriter<ControlMusicEvent>) {
+pub(crate) fn suspend_music(event_writer: &mut MessageWriter<ControlMusicEvent>) {
     event_writer.write(ControlMusicEvent::Suspend);
 }
 
-pub(crate) fn resume_music(event_writer: &mut EventWriter<ControlMusicEvent>) {
+pub(crate) fn resume_music(event_writer: &mut MessageWriter<ControlMusicEvent>) {
     event_writer.write(ControlMusicEvent::Resume);
 }
 
@@ -59,16 +58,16 @@ fn volume_update(
     if let Ok(mut sink) = music_box_query.single_mut() {
         let vol = sink.volume();
         if keys.just_pressed(KeyCode::Equal) || keys.just_pressed(KeyCode::NumpadAdd) {
-            sink.set_volume(vol + Volume::Linear(0.1));
+            sink.set_volume(vol.increase_by_percentage(0.1));
         } else if keys.just_pressed(KeyCode::Minus) || keys.just_pressed(KeyCode::NumpadSubtract) {
-            sink.set_volume(vol - Volume::Linear(0.1));
+            sink.set_volume(vol.decrease_by_percentage(0.1));
         }
     }
     Ok(())
 }
 
 fn handle_music_events(
-    mut music_events: EventReader<ControlMusicEvent>,
+    mut music_events: MessageReader<ControlMusicEvent>,
     mut state: ResMut<MusicState>,
     music_box_query: Query<&AudioSink>,
 ) {
