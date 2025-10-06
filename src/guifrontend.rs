@@ -11,6 +11,7 @@ use crate::process::do_launch;
 use crate::wheel::wheel_plugin;
 use crate::windowing;
 use crate::windowing::WindowingPlugin;
+use bevy::platform::collections::HashSet;
 use bevy::prelude::*;
 use bevy::window::*;
 use bevy_asset::UnapprovedPathMode;
@@ -44,7 +45,7 @@ pub(crate) struct Globals {
 #[allow(clippy::too_many_arguments)]
 fn launcher(
     keys: Res<ButtonInput<KeyCode>>,
-    mut control_music_event_writer: EventWriter<ControlMusicEvent>,
+    mut control_music_event_writer: MessageWriter<ControlMusicEvent>,
     stream_sender: Res<StreamSender>,
     config: Res<Config>,
     selected_item: Res<SelectedItem>,
@@ -75,8 +76,8 @@ fn launcher(
 
 fn quit_on_q_or_window_closed(
     keys: Res<ButtonInput<KeyCode>>,
-    mut window_events: EventReader<WindowEvent>,
-    mut app_exit_event_writer: EventWriter<AppExit>,
+    mut window_events: MessageReader<WindowEvent>,
+    mut app_exit_event_writer: MessageWriter<AppExit>,
 ) {
     if keys.just_pressed(KeyCode::KeyQ) {
         app_exit_event_writer.write(AppExit::Success);
@@ -91,9 +92,9 @@ fn quit_on_q_or_window_closed(
 
 #[allow(clippy::too_many_arguments)]
 fn handle_external_events(
-    mut reader: EventReader<ExternalEvent>,
-    mut music_event_writer: EventWriter<ControlMusicEvent>,
-    mut table_loading_event_writer: EventWriter<TableLoadingEvent>,
+    mut reader: MessageReader<ExternalEvent>,
+    mut music_event_writer: MessageWriter<ControlMusicEvent>,
+    mut table_loading_event_writer: MessageWriter<TableLoadingEvent>,
     mut globals: ResMut<Globals>,
     mut vpx_tables: ResMut<VpxTables>,
     mut window_query: Query<&mut Window, With<PrimaryWindow>>,
@@ -198,11 +199,11 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             bevy::diagnostic::LogDiagnosticsPlugin {
                 debug: false,
                 wait_duration: std::time::Duration::from_secs(1),
-                filter: Some(vec![
+                filter: Some(HashSet::from([
                     bevy::diagnostic::DiagnosticPath::new("fps"),
                     bevy::diagnostic::DiagnosticPath::new("process/cpu_usage"),
                     bevy::diagnostic::DiagnosticPath::new("process/mem_usage"),
-                ]),
+                ])),
             },
             // Any plugin can register diagnostics. Uncomment this to add an entity count diagnostics:
             //bevy::diagnostic::EntityCountDiagnosticsPlugin::default(),

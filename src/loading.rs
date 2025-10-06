@@ -36,7 +36,7 @@ pub(crate) enum LoadingState {
     Ready,
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub(crate) enum TableLoadingEvent {
     Length(u64),
     Position(u64),
@@ -71,7 +71,7 @@ impl LoadingData {
 
 pub(crate) fn loading_plugin(app: &mut App) {
     app.add_plugins(PipelinesReadyPlugin);
-    app.add_event::<TableLoadingEvent>();
+    app.add_message::<TableLoadingEvent>();
     app.insert_resource(LoadingData::new(5));
     app.insert_resource(LoadingDialogBox {
         title: "Loading".to_owned(),
@@ -99,7 +99,7 @@ fn update_loading_data(
     asset_server: Res<AssetServer>,
     pipelines_ready: Res<PipelinesReady>,
     asset_paths: Res<AssetPaths>,
-    mut table_loading_event_reader: EventReader<TableLoadingEvent>,
+    mut table_loading_event_reader: MessageReader<TableLoadingEvent>,
 ) {
     for event in table_loading_event_reader.read() {
         match event {

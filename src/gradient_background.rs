@@ -1,8 +1,9 @@
 use bevy::color::LinearRgba;
 use bevy::color::palettes::css;
 use bevy::prelude::*;
-use bevy::render::render_resource::{AsBindGroup, ShaderRef};
-use bevy::sprite::{Material2d, Material2dPlugin};
+use bevy::render::render_resource::AsBindGroup;
+use bevy::shader::ShaderRef;
+use bevy::sprite_render::{Material2d, Material2dPlugin};
 use bevy::window::{PrimaryWindow, WindowResized};
 use bevy_asset::Assets;
 
@@ -30,7 +31,7 @@ pub(crate) fn plugin(app: &mut App) {
 }
 
 fn update_background_on_resize(
-    mut resize_events: EventReader<WindowResized>,
+    mut resize_events: MessageReader<WindowResized>,
     mut meshes: ResMut<Assets<Mesh>>,
     query: Query<&Mesh2d, With<BackgroundGradient>>,
     window_query: Query<(Entity, &Window), With<PrimaryWindow>>,

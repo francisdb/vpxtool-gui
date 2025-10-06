@@ -1,5 +1,5 @@
+use bevy::camera::RenderTarget;
 use bevy::prelude::*;
-use bevy::render::camera::RenderTarget;
 use bevy::window::{WindowCreated, WindowRef};
 
 #[derive(Component)]
@@ -29,7 +29,7 @@ fn switch_visibility(
 }
 
 fn add_label_to_new_windows(
-    mut created_events: EventReader<WindowCreated>,
+    mut created_events: MessageReader<WindowCreated>,
     mut commands: Commands,
     window_query: Query<(Entity, &Window)>,
     camera_query: Query<(Entity, &Camera)>,
