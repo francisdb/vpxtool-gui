@@ -2,7 +2,7 @@ use crate::dmd::dmd_plugin;
 use crate::event_channel::{ChannelExternalEvent, ExternalEvent, StreamSender};
 use crate::flippers::flipper_plugin;
 use crate::gradient_background::setup_gradient_background;
-use crate::info::show_info;
+use crate::info::info_plugin;
 use crate::list::{SelectedItem, display_table_line, list_plugin};
 use crate::loading::{LoadingState, TableLoadingEvent};
 use crate::loading::{loading_plugin, mark_tables_loaded};
@@ -181,14 +181,19 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         .add_plugins(WindowingPlugin)
         .add_plugins(crate::event_channel::plugin)
         .add_plugins(music_plugin)
-        .add_plugins((wheel_plugin, flipper_plugin, dmd_plugin, list_plugin))
+        .add_plugins((
+            wheel_plugin,
+            flipper_plugin,
+            dmd_plugin,
+            list_plugin,
+            info_plugin,
+        ))
         .add_plugins(loading_plugin)
         .add_plugins(crate::gradient_background::plugin)
         .add_systems(Startup, setup_gradient_background)
         .add_systems(Update, quit_on_q_or_window_closed)
         .add_systems(Update, handle_external_events)
         .add_systems(Update, launcher.run_if(in_state(LoadingState::Ready)))
-        .add_systems(Update, show_info.run_if(in_state(LoadingState::Ready)))
         .init_state::<LoadingState>();
 
     // only for development
