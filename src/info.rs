@@ -29,14 +29,6 @@ pub(crate) fn info_plugin(app: &mut App) {
 }
 
 fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
-    // TODO use bevy ui to create a window with a scrollable text area
-
-    // Camera
-    //commands.spawn((Camera2d, IsDefaultUiCamera));
-
-    // Font
-    // let font_handle = asset_server.load("fonts/FiraSans-Bold.ttf");
-
     commands
         .spawn((
             Node {
@@ -75,7 +67,6 @@ fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
                         children![(
                             Text::new("[No title]"),
                             TextFont {
-                                //font: font_handle.clone(),
                                 font_size: FONT_SIZE_TITLE,
                                 ..default()
                             },
