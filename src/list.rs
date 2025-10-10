@@ -1,9 +1,7 @@
 use crate::guifrontend::VpxTables;
-use crate::loading::LoadingState;
+use crate::input::{TableSelectionChanged, wrap_around};
 use bevy::color::palettes::css::{GHOST_WHITE, GOLD};
-use bevy::input::ButtonInput;
 use bevy::prelude::*;
-use bevy::time::Stopwatch;
 use std::cmp::Ordering;
 use vpxtool::indexer::IndexedTable;
 
@@ -37,12 +35,7 @@ const ITEMS_SHOWN: usize = ITEMS_AROUND_SELECTED * 2 + 1;
 pub(crate) fn list_plugin(app: &mut App) {
     app.insert_resource(SelectedItem::default());
     app.add_systems(Startup, create_list);
-    app.add_systems(
-        Update,
-        (input_handling, list_update)
-            .chain()
-            .run_if(in_state(LoadingState::Ready)),
-    );
+    app.add_systems(Update, handle_table_selection_changed);
 }
 
 fn create_list(mut commands: Commands) {
@@ -94,87 +87,35 @@ fn create_list(mut commands: Commands) {
     }
 }
 
-fn list_update(
+fn handle_table_selection_changed(
+    mut event_reader: MessageReader<TableSelectionChanged>,
     tables: Res<VpxTables>,
     mut text_items: Query<(&mut TableText, &mut Text), With<TextItem>>,
     selected_item: Res<SelectedItem>,
 ) {
-    // TODO we should only be making changes if the selected item has changed
+    for _event in event_reader.read() {
+        let selected_item = selected_item.index.unwrap_or(0);
+        let table_indices = generate_table_indices(tables.indexed_tables.len(), selected_item);
+        for (mut table_text, mut text) in text_items.iter_mut() {
+            let list_index = table_text.list_index;
+            let (table_name, table_description) = if tables.indexed_tables.is_empty() {
+                ("".to_string(), "".to_string())
+            } else {
+                let table_index = table_indices[list_index];
+                let table = &tables.indexed_tables[table_index];
+                let table_name = display_table_line(table);
+                let table_description = table
+                    .table_info
+                    .table_description
+                    .clone()
+                    .unwrap_or("Description missing".to_string());
+                (table_name, table_description)
+            };
 
-    let selected_item = selected_item.index.unwrap_or(0);
-    let table_indices = generate_table_indices(tables.indexed_tables.len(), selected_item);
-    for (mut table_text, mut text) in text_items.iter_mut() {
-        let list_index = table_text.list_index;
-        let (table_name, table_description) = if tables.indexed_tables.is_empty() {
-            ("".to_string(), "".to_string())
-        } else {
-            let table_index = table_indices[list_index];
-            let table = &tables.indexed_tables[table_index];
-            let table_name = display_table_line(table);
-            let table_description = table
-                .table_info
-                .table_description
-                .clone()
-                .unwrap_or("Description missing".to_string());
-            (table_name, table_description)
-        };
-
-        table_text.table_text = table_description;
-        text.0 = table_name;
-    }
-}
-
-#[derive(Default)]
-struct ShiftIncrement {
-    s: f32,
-}
-
-fn input_handling(
-    time: Res<Time>,
-    keys: Res<ButtonInput<KeyCode>>,
-    mut shift_stop_watch: Local<Stopwatch>,
-    mut shift_applied: Local<ShiftIncrement>,
-    mut selected_item_res: ResMut<SelectedItem>,
-    tables: Res<VpxTables>,
-) {
-    let mut selected_item = selected_item_res.index.unwrap_or(0) as i16;
-
-    // Update timers
-    shift_stop_watch.tick(time.delta());
-
-    // Adjust increment based on time pressed
-    let shift_increment = (shift_stop_watch.elapsed_secs() / 1.5).min(10.0);
-
-    if keys.just_pressed(KeyCode::ShiftRight) {
-        selected_item += 1;
-        shift_applied.s = 0.0;
-        shift_stop_watch.reset();
-    } else if keys.just_pressed(KeyCode::ShiftLeft) {
-        selected_item -= 1;
-        shift_applied.s = 0.0;
-        shift_stop_watch.reset();
-    } else if keys.pressed(KeyCode::ShiftRight) {
-        shift_applied.s += shift_increment;
-        if shift_applied.s >= 1.0 {
-            selected_item += shift_applied.s.floor() as i16;
-            shift_applied.s = shift_applied.s.fract();
-        }
-    } else if keys.pressed(KeyCode::ShiftLeft) {
-        shift_applied.s += shift_increment;
-        if shift_applied.s >= 1.0 {
-            selected_item -= shift_applied.s.floor() as i16;
-            shift_applied.s = shift_applied.s.fract();
+            table_text.table_text = table_description;
+            text.0 = table_name;
         }
     }
-
-    let table_count = tables.indexed_tables.len();
-
-    // Wrap around if one of the bounds are hit.
-    let selected_item = wrap_around(selected_item, table_count);
-    if selected_item_res.index != Some(selected_item) {
-        debug!("Selected item: {} ({} total)", selected_item, table_count);
-    }
-    selected_item_res.index = Some(selected_item);
 }
 
 pub(crate) fn display_table_line(table: &IndexedTable) -> String {
@@ -208,19 +149,6 @@ fn generate_table_indices(max_index: usize, selected_index: usize) -> [usize; IT
         *item = wrap_around(selected_index as i16 - index, max_index);
     }
     table_indices
-}
-
-/// Wraps a number around a maximum value.
-fn wrap_around(n: i16, max: usize) -> usize {
-    if n == 0 || max == 0 {
-        0
-    } else if n >= max as i16 {
-        n as usize % max
-    } else if n < 0 {
-        ((n % max as i16 + max as i16) % max as i16) as usize
-    } else {
-        n as usize
-    }
 }
 
 #[cfg(test)]
