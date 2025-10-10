@@ -15,7 +15,6 @@ use bevy::platform::collections::HashSet;
 use bevy::prelude::*;
 use bevy::window::*;
 use bevy_asset::UnapprovedPathMode;
-use bevy_egui::EguiPlugin;
 use std::io;
 use std::process::ExitCode;
 use vpxtool::config::ResolvedConfig;
@@ -177,7 +176,6 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
                     ..Default::default()
                 }),
         )
-        .add_plugins(EguiPlugin::default())
         .add_plugins(WindowingPlugin)
         .add_plugins(crate::event_channel::plugin)
         .add_plugins(music_plugin)
