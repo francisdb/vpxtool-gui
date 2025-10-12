@@ -1,6 +1,6 @@
 use crate::guifrontend::VpxTables;
+use crate::input::TableSelectionChanged;
 use crate::list::{SelectedItem, display_table_line};
-use crate::loading::LoadingState;
 use bevy::input::ButtonInput;
 use bevy::input::mouse::{MouseScrollUnit, MouseWheel};
 use bevy::picking::hover::HoverMap;
@@ -20,11 +20,14 @@ struct TitleNode;
 #[derive(Component)]
 struct BodyNode;
 
+#[derive(Component)]
+struct BodyScroller;
+
 pub(crate) fn info_plugin(app: &mut App) {
     app.add_systems(Startup, setup)
         .add_systems(Update, send_scroll_events)
         .add_systems(Update, toggle_visibility)
-        .add_systems(Update, update_ui.run_if(in_state(LoadingState::Ready)))
+        .add_systems(Update, handle_table_selection_changed)
         .add_observer(on_scroll_handler);
 }
 
@@ -83,6 +86,7 @@ fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
                             overflow: Overflow::scroll_y(), // n.b.
                             ..default()
                         },
+                        BodyScroller,
                         children![(
                             Text::new("[no description]"),
                             TextFont {
@@ -194,16 +198,34 @@ fn send_scroll_events(
     }
 }
 
-fn update_ui(
+fn handle_table_selection_changed(
+    mut event_reader: MessageReader<TableSelectionChanged>,
     selected_item_res: Res<SelectedItem>,
     tables: Res<VpxTables>,
     mut title_text: Single<&mut Text, With<TitleNode>>,
     mut body_text: Single<&mut Text, (With<BodyNode>, Without<TitleNode>)>,
+    mut scroll_query: Query<&mut ScrollPosition, With<BodyScroller>>,
 ) {
-    // TODO this should only happen when the selected item changes
-    // and also reset the scroll position of the body text area to the top
+    // TODO only call this if the info panel is visible
+    //   apply the same update toggle_visibility
+    for _event in event_reader.read() {
+        update_view(
+            &selected_item_res,
+            &tables,
+            &mut title_text,
+            &mut body_text,
+            &mut scroll_query,
+        );
+    }
+}
 
-    // TODO when an item is selected, update the title and the text area with the table description
+fn update_view(
+    selected_item_res: &Res<SelectedItem>,
+    tables: &Res<VpxTables>,
+    title_text: &mut Single<&mut Text, With<TitleNode>>,
+    body_text: &mut Single<&mut Text, (With<BodyNode>, Without<TitleNode>)>,
+    scroll_query: &mut Query<&mut ScrollPosition, With<BodyScroller>>,
+) {
     let selected_item = selected_item_res.index.unwrap_or(0);
     let table = &tables.indexed_tables[selected_item];
     let gametext = table
@@ -213,6 +235,12 @@ fn update_ui(
         .filter(|x| !x.trim().is_empty())
         .unwrap_or("[no description]".to_string());
     let title = display_table_line(table);
+
+    // reset the scroll position to the top
+    if let Ok(mut scroll_position) = scroll_query.single_mut() {
+        scroll_position.x = 0.0;
+        scroll_position.y = 0.0;
+    }
 
     title_text.0 = title;
     body_text.0 = gametext;

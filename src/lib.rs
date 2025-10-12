@@ -4,6 +4,7 @@ mod flippers;
 mod gradient_background;
 pub mod guifrontend;
 mod info;
+mod input;
 mod list;
 mod loading;
 mod music;

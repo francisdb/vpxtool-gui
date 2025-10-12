@@ -3,6 +3,7 @@ use crate::event_channel::{ChannelExternalEvent, ExternalEvent, StreamSender};
 use crate::flippers::flipper_plugin;
 use crate::gradient_background::setup_gradient_background;
 use crate::info::info_plugin;
+use crate::input::{TableSelectionChanged, input_plugin};
 use crate::list::{SelectedItem, display_table_line, list_plugin};
 use crate::loading::{LoadingState, TableLoadingEvent};
 use crate::loading::{loading_plugin, mark_tables_loaded};
@@ -165,6 +166,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             vpinball_running: false,
         })
         .insert_resource(ClearColor(Color::srgb(0.1, 0.1, 0.1)))
+        .add_message::<TableSelectionChanged>()
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
@@ -185,6 +187,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             dmd_plugin,
             list_plugin,
             info_plugin,
+            input_plugin,
         ))
         .add_plugins(loading_plugin)
         .add_plugins(crate::gradient_background::plugin)
