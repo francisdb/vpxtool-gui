@@ -31,6 +31,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.8.1
       - name: Build
-        run: cargo build --verbose
+        run: cargo build --locked --verbose
       - name: Run tests
         run: cargo test --verbose
