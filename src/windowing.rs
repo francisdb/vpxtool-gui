@@ -209,10 +209,7 @@ fn setup_other_window(commands: &mut Commands, vpx_config: &VpxConfig, window_ty
         commands.spawn((
             DMDCamera,
             Camera2d,
-            Camera {
-                target: RenderTarget::Window(WindowRef::Entity(window_entity)),
-                ..default()
-            },
+            RenderTarget::Window(WindowRef::Entity(window_entity)),
             render_layers,
         ));
     } else {
@@ -376,8 +373,10 @@ fn is_fullscreen_playfield(window_type: WindowType, window_info: &WindowInfo) ->
 
 fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: WindowType) {
     if is_fullscreen_playfield(window_type, window_info) {
+        // Fullscreen does not work on wayland for now
+        // https://github.com/bevyengine/bevy/issues/18556
         window.mode =
-            WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current);
+            WindowMode::BorderlessFullscreen(MonitorSelection::Primary);
         return;
     }
     let position = if let (Some(x), Some(y)) = (window_info.x, window_info.y) {

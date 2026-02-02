@@ -4,7 +4,7 @@ use crate::list::SelectedItem;
 use crate::loading::{LoadingData, LoadingState};
 use bevy::ecs::system::SystemId;
 use bevy::image::Image;
-use bevy::log::{debug, info};
+use bevy::log::debug;
 use bevy::math::Vec3;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
@@ -92,15 +92,12 @@ pub(crate) fn create_wheels(
     asset_server: Res<AssetServer>,
     mut loading_data: ResMut<LoadingData>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut game_state: ResMut<NextState<LoadingState>>,
     config: Res<Config>,
     vpx_tables: Res<VpxTables>,
     mut asset_paths: ResMut<AssetPaths>,
     mut wheel_info: ResMut<WheelInfo>,
     mut wheel_query: Query<Entity, With<Wheel>>,
 ) {
-    info!("Creating wheels...");
-
     // remove any existing wheels
     for entity in wheel_query.iter_mut() {
         commands.entity(entity).despawn();
@@ -165,8 +162,6 @@ pub(crate) fn create_wheels(
             },
         });
     }
-    info!("Wheels assets loading...");
-    game_state.set(LoadingState::LoadingImages);
 }
 
 fn derive_wheel_size(window: &Window) -> f32 {
