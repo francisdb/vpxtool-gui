@@ -55,6 +55,8 @@ pub(crate) struct LoadingData {
     confirmation_frames_count: usize,
     num_tables: u64,
     loaded_tables: u64,
+    assets_loading_started: bool,
+    assets_loading_finished: bool,
 }
 
 impl LoadingData {
@@ -65,6 +67,8 @@ impl LoadingData {
             confirmation_frames_count: 0,
             num_tables: 0,
             loaded_tables: 0,
+            assets_loading_started: false,
+            assets_loading_finished: false,
         }
     }
 }
@@ -129,6 +133,14 @@ fn update_loading_data(
         }
         LoadingState::LoadingImages => {
             dialog.title = "Loading images".to_string();
+            if !loading_data.assets_loading_started && !loading_data.loading_assets.is_empty() {
+                info!(
+                    "Wheel assets loading... (queued: {})",
+                    loading_data.loading_assets.len()
+                );
+                loading_data.assets_loading_started = true;
+                loading_data.assets_loading_finished = false;
+            }
             if !loading_data.loading_assets.is_empty() || !pipelines_ready.0 {
                 // If we are still loading assets / pipelines are not fully compiled,
                 // we reset the confirmation frame count.
@@ -176,6 +188,10 @@ fn update_loading_data(
                 // Once enough confirmations have passed, everything will be
                 // considered to be fully loaded.
             } else {
+                if loading_data.assets_loading_started && !loading_data.assets_loading_finished {
+                    info!("Wheel assets loaded.");
+                    loading_data.assets_loading_finished = true;
+                }
                 loading_data.confirmation_frames_count += 1;
                 if loading_data.confirmation_frames_count == loading_data.confirmation_frames_target
                 {
@@ -199,7 +215,13 @@ pub(crate) fn mark_tables_loaded(next_state: &mut NextState<LoadingState>) {
     // TODO request all images to be loaded here?
 }
 
-fn load_images(mut commands: Commands, load_wheels_system: Res<LoadWheelsSystem>) {
+fn load_images(
+    mut commands: Commands,
+    load_wheels_system: Res<LoadWheelsSystem>,
+    mut loading_data: ResMut<LoadingData>,
+) {
+    loading_data.assets_loading_started = false;
+    loading_data.assets_loading_finished = false;
     commands.run_system(load_wheels_system.0);
 }
 

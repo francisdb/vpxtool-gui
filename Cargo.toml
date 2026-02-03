@@ -9,9 +9,9 @@ path = "src/main.rs"
 
 [dependencies]
 vpxtool = "0.24.12"
-bevy = "0.17.3"
-bevy_asset = "0.17.3"
-bevy_dev_tools = "0.17.3"
+bevy = "0.18.0"
+bevy_asset = "0.18.0"
+bevy_dev_tools = "0.18.0"
 #bevy_asset_loader = "0.22.0"
 crossbeam-channel = "0.5.15"
 is_executable = "1.0.5"

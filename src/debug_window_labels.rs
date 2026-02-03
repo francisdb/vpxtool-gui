@@ -32,7 +32,7 @@ fn add_label_to_new_windows(
     mut created_events: MessageReader<WindowCreated>,
     mut commands: Commands,
     window_query: Query<(Entity, &Window)>,
-    camera_query: Query<(Entity, &Camera)>,
+    camera_query: Query<(Entity, &RenderTarget)>,
 ) {
     for event in created_events.read() {
         info!("Window created: {:?}", event);
@@ -43,9 +43,9 @@ fn add_label_to_new_windows(
 
         let window_camera_entity = camera_query
             .iter()
-            .find(|(_, camera)| {
-                if let RenderTarget::Window(WindowRef::Entity(window_entity)) = camera.target {
-                    window_entity == event.window
+            .find(|(_, target)| {
+                if let RenderTarget::Window(WindowRef::Entity(window_entity)) = target {
+                    *window_entity == event.window
                 } else {
                     false
                 }
@@ -56,9 +56,7 @@ fn add_label_to_new_windows(
         let window_camera_entity = window_camera_entity.unwrap_or_else(|| {
             camera_query
                 .iter()
-                .find(|(_, camera)| {
-                    matches!(camera.target, RenderTarget::Window(WindowRef::Primary))
-                })
+                .find(|(_, target)| matches!(target, RenderTarget::Window(WindowRef::Primary)))
                 .map(|(entity, _)| entity)
                 .unwrap()
         });
