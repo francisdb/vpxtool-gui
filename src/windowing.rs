@@ -375,8 +375,7 @@ fn setup_window(window_info: &WindowInfo, window: &mut Window, window_type: Wind
     if is_fullscreen_playfield(window_type, window_info) {
         // Fullscreen does not work on wayland for now
         // https://github.com/bevyengine/bevy/issues/18556
-        window.mode =
-            WindowMode::BorderlessFullscreen(MonitorSelection::Primary);
+        window.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Primary);
         return;
     }
     let position = if let (Some(x), Some(y)) = (window_info.x, window_info.y) {

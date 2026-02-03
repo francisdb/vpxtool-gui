@@ -56,9 +56,7 @@ fn add_label_to_new_windows(
         let window_camera_entity = window_camera_entity.unwrap_or_else(|| {
             camera_query
                 .iter()
-                .find(|(_, target)| {
-                    matches!(target, RenderTarget::Window(WindowRef::Primary))
-                })
+                .find(|(_, target)| matches!(target, RenderTarget::Window(WindowRef::Primary)))
                 .map(|(entity, _)| entity)
                 .unwrap()
         });
