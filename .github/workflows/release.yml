@@ -63,7 +63,7 @@ jobs:
           fi
           rm -rf $ARCHIVE_DIR
       - name: Publish release artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}
