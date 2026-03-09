@@ -1995,9 +1995,9 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "chrono"
-version = "0.4.43"
+version = "0.4.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fac4744fb15ae8337dc853fee7fb3f4e48c0fbaa23d0afe49c447b4fab126118"
+checksum = "c673075a2e0e5f4a1dde27ce9dee1ea4558c7ffe648f576438a20ca1d2acc4b0"
 dependencies = [
  "iana-time-zone",
  "num-traits",
@@ -4570,9 +4570,9 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "pinmame-nvram"
-version = "0.4.4"
+version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a216cd00ab51f6f6a835c9c9a98d215da3fa7380661ad85b82e52cd2771ef624"
+checksum = "ef4a576be7b515eec534964e3ec7264586e80c101c0c21cc739fe333a05982af"
 dependencies = [
  "brotli",
  "include_dir",
@@ -5250,9 +5250,9 @@ checksum = "24188a676b6ae68c3b2cb3a01be17fbf7240ce009799bb56d5b1409051e78fde"
 
 [[package]]
 name = "shellexpand"
-version = "3.1.1"
+version = "3.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b1fdf65dd6331831494dd616b30351c38e96e45921a27745cf98490458b90bb"
+checksum = "32824fab5e16e6c4d86dc1ba84489390419a39f97699852b66480bb87d297ed8"
 dependencies = [
  "dirs",
 ]
@@ -5626,9 +5626,9 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "1.0.3+spec-1.1.0"
+version = "1.0.6+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7614eaf19ad818347db24addfa201729cf2a9b6fdfd9eb0ab870fcacc606c0c"
+checksum = "399b1124a3c9e16766831c6bba21e50192572cdd98706ea114f9502509686ffc"
 dependencies = [
  "indexmap",
  "serde_core",
@@ -5947,9 +5947,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vpin"
-version = "0.21.1"
+version = "0.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d0d70062d5aab2470b9b97f0febab5fab1aff52b2fa42dbab092795d2d6300d"
+checksum = "179cf565813e325530795c0595ec1733ee02e177a6fa1517dfe5e18116e01389"
 dependencies = [
  "byteorder",
  "bytes",
@@ -5973,9 +5973,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.25.0"
+version = "0.26.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b945de55fe311413688e8f844bb2243f8f8aee177504f1d17b8b2676fd8d9f46"
+checksum = "e116ffec1c68a8791fc38047e96534dd9c82af95072fa67e1af44b9da4ef8f13"
 dependencies = [
  "base64",
  "chrono",
@@ -6002,7 +6002,7 @@ dependencies = [
  "serde",
  "serde_json",
  "shellexpand",
- "toml 1.0.3+spec-1.1.0",
+ "toml 1.0.6+spec-1.1.0",
  "vpin",
  "walkdir",
  "wild",
