@@ -8,7 +8,7 @@ path = "src/main.rs"
 
 
 [dependencies]
-vpxtool = "0.25.0"
+vpxtool = "0.26.1"
 bevy = "0.18.1"
 bevy_asset = "0.18.0"
 bevy_dev_tools = "0.18.0"
