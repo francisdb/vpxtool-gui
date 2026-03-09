@@ -9,7 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 vpxtool = "0.25.0"
-bevy = "0.18.0"
+bevy = "0.18.1"
 bevy_asset = "0.18.0"
 bevy_dev_tools = "0.18.0"
 #bevy_asset_loader = "0.22.0"
