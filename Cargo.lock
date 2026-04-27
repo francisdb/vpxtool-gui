@@ -5267,15 +5267,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "24188a676b6ae68c3b2cb3a01be17fbf7240ce009799bb56d5b1409051e78fde"
 
 [[package]]
-name = "shellexpand"
-version = "3.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32824fab5e16e6c4d86dc1ba84489390419a39f97699852b66480bb87d297ed8"
-dependencies = [
- "dirs",
-]
-
-[[package]]
 name = "shlex"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5991,9 +5982,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.27.0"
+version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52580bca133271db777701a0ab3603d40517f1e86ab4fc6aff559f7e9a537783"
+checksum = "f81abd03650d6d81d2a1d9b88c07c953204f6c1c8c507c74441ce8b6100a9101"
 dependencies = [
  "base64",
  "chrono",
@@ -6019,7 +6010,6 @@ dependencies = [
  "rust-ini",
  "serde",
  "serde_json",
- "shellexpand",
  "toml 1.1.2+spec-1.1.0",
  "vpin",
  "walkdir",
