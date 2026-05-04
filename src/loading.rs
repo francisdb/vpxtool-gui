@@ -350,11 +350,13 @@ fn load_tables(
         let recursive = true;
         // TODO make a progress that sends events and update loading gui
         let progress = EventSendingProgress { sender: tx.clone() };
+        let global_pinmame = resolved_config.global_pinmame_folder();
         let index_result = vpxtool::indexer::index_folder(
             recursive,
+            None,
             &resolved_config.tables_folder,
             &resolved_config.tables_index_path,
-            Some(&resolved_config.global_pinmame_folder()),
+            Some(global_pinmame.as_path()),
             resolved_config.configured_pinmame_folder().as_deref(),
             &progress,
             Vec::new(),
