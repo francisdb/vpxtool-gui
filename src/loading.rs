@@ -360,6 +360,7 @@ fn load_tables(
             resolved_config.configured_pinmame_folder().as_deref(),
             &progress,
             Vec::new(),
+            false,
         );
         progress.finish_and_clear();
         match index_result {
