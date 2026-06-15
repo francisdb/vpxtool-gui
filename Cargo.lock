@@ -2046,9 +2046,9 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "chrono"
-version = "0.4.44"
+version = "0.4.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c673075a2e0e5f4a1dde27ce9dee1ea4558c7ffe648f576438a20ca1d2acc4b0"
+checksum = "1aa79e62e7697b8e29b513a68abacf485adcd1fe8284a4316c5ae868e6633327"
 dependencies = [
  "iana-time-zone",
  "num-traits",
@@ -6078,9 +6078,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.33.2"
+version = "0.33.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd6d5defaff4689dd2a3604c38502f0befb3e8ee180bb52a09f31d42db30894b"
+checksum = "f307ba9ca6c49cd279bb6f06cd1c820431c8cf87af590d0d0ec1f18f388c67eb"
 dependencies = [
  "base64",
  "chrono",
