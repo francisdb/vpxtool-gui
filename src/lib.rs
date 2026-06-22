@@ -1,10 +1,10 @@
-mod dmd;
 mod event_channel;
 mod flippers;
 mod gradient_background;
 pub mod guifrontend;
 mod info;
 mod input;
+mod keys_bar;
 mod list;
 mod loading;
 mod music;

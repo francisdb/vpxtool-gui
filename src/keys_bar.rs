@@ -5,10 +5,10 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 #[derive(Component)]
-pub struct Dmd;
+pub struct KeysBar;
 
 #[derive(Component)]
-struct DmdText;
+struct KeysBarText;
 
 /// How long the keys bar stays fully visible after the last key activity.
 const VISIBLE_SECS: f32 = 2.5;
@@ -17,19 +17,22 @@ const FADE_SECS: f32 = 0.3;
 /// Background opacity of the bar when fully faded in.
 const BG_ALPHA: f32 = 0.5;
 
-pub(crate) fn dmd_plugin(app: &mut App) {
-    app.add_systems(Startup, create_dmd);
-    app.add_systems(Update, dmd_update.run_if(in_state(LoadingState::Ready)));
+pub(crate) fn keys_bar_plugin(app: &mut App) {
+    app.add_systems(Startup, create_keys_bar);
+    app.add_systems(
+        Update,
+        keys_bar_update.run_if(in_state(LoadingState::Ready)),
+    );
 }
 
 /// Fade the keys bar in while keys are being pressed and out a short moment after.
-fn dmd_update(
+fn keys_bar_update(
     keys: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
     mut timer: Local<Timer>,
     mut fade: Local<f32>,
-    mut bar_query: Query<(&mut BackgroundColor, &mut Visibility), With<Dmd>>,
-    mut text_query: Query<&mut TextColor, With<DmdText>>,
+    mut bar_query: Query<(&mut BackgroundColor, &mut Visibility), With<KeysBar>>,
+    mut text_query: Query<&mut TextColor, With<KeysBarText>>,
 ) {
     // Any key held or just pressed (re)arms the visibility timer.
     if keys.get_pressed().next().is_some() {
@@ -61,7 +64,7 @@ fn dmd_update(
     }
 }
 
-fn create_dmd(mut commands: Commands) {
+fn create_keys_bar(mut commands: Commands) {
     commands.spawn((
         // Full-width bar anchored to the bottom, centering its text child.
         Node {
@@ -76,9 +79,9 @@ fn create_dmd(mut commands: Commands) {
         },
         // Dark, 50% opaque overlay; starts fully transparent and fades in.
         BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.0)),
-        // Hidden until the first key press; toggled by dmd_update.
+        // Hidden until the first key press; toggled by keys_bar_update.
         Visibility::Hidden,
-        Dmd,
+        KeysBar,
         children![(
             Text::new(
                 "q: quit    |    1: table info    |    left-shift / right-shift: scroll    |    enter: launch",
@@ -92,7 +95,7 @@ fn create_dmd(mut commands: Commands) {
                 justify: Justify::Center,
                 linebreak: LineBreak::NoWrap,
             },
-            DmdText,
+            KeysBarText,
         )],
     ));
 }
