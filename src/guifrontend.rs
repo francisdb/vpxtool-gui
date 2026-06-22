@@ -17,6 +17,7 @@ use bevy::prelude::*;
 use bevy::window::*;
 use bevy_asset::UnapprovedPathMode;
 use std::io;
+use std::path::Path;
 use std::process::ExitCode;
 use vpxtool::config::ResolvedConfig;
 use vpxtool::indexer::IndexedTable;
@@ -136,11 +137,39 @@ fn handle_external_events(
     }
 }
 
+/// Read the vpinball ini, tolerating malformed lines with an empty key.
+///
+/// VPinballX occasionally writes entries with an empty key (e.g. ` = 1.0`) into
+/// its ini file. The strict `rust-ini` parser used by `VPinballConfig::read`
+/// rejects these with a "missing key" error, so we drop such lines before
+/// handing the content to `VPinballConfig::read_from`.
+fn read_vpinball_config(ini_path: &Path) -> io::Result<VPinballConfig> {
+    let raw = std::fs::read_to_string(ini_path)?;
+    let mut skipped = 0;
+    let cleaned: Vec<&str> = raw
+        .lines()
+        .filter(|line| match line.split_once('=') {
+            Some((key, _)) if key.trim().is_empty() => {
+                skipped += 1;
+                false
+            }
+            _ => true,
+        })
+        .collect();
+    if skipped > 0 {
+        warn!(
+            "Skipped {skipped} malformed line(s) with an empty key while reading {}",
+            ini_path.display()
+        );
+    }
+    VPinballConfig::read_from(&mut cleaned.join("\n").as_bytes())
+}
+
 pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
     let tables: Vec<IndexedTable> = Vec::new();
     let vpinball_ini_path = &config.vpx_config;
     let vpinball_config = if vpinball_ini_path.exists() {
-        VPinballConfig::read(vpinball_ini_path)
+        read_vpinball_config(vpinball_ini_path)
             .map_err(|err| io::Error::other(format!("Error reading vpinball.ini: {err}")))?
     } else {
         // FIXME logging is not set up at this point so this is not visible
