@@ -113,7 +113,7 @@ fn create_dmd(mut commands: Commands, window_query: Query<&Window, With<PrimaryW
         text: Text::new("Keys       q: quit\n1: open up table description dialog\nleft-shift: scroll backward\nright-shift: scroll forward\nenter: start selected game"),
         text_font: TextFont {
             // This font is loaded and will be used instead of the default font.
-            font_size: 20.0,
+            font_size: FontSize::Px(20.0),
             ..default()
         },
         text_color: TextColor::from(GHOST_WHITE),

@@ -40,7 +40,7 @@ fn update_background_on_resize(
         let (primary_window_entity, primary_window) = window_query.single()?;
         if event.window == primary_window_entity {
             let background_mesh = query.single()?;
-            if let Some(mesh) = meshes.get_mut(background_mesh) {
+            if let Some(mut mesh) = meshes.get_mut(background_mesh) {
                 *mesh = window_mesh(primary_window);
             }
         }

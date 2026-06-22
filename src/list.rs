@@ -64,7 +64,7 @@ fn create_list(mut commands: Commands) {
         commands.spawn(MenuTextBundle {
             text: Text::new(""),
             text_font: TextFont {
-                font_size,
+                font_size: FontSize::Px(font_size),
                 ..default()
             },
             text_color,
