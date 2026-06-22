@@ -1,124 +1,98 @@
 use crate::loading::LoadingState;
-use crate::wheel::{BOTTOM_MARGIN, WheelInfo};
-use bevy::color::Color;
-use bevy::color::palettes::css::{GHOST_WHITE, GOLDENROD};
-use bevy::math::Vec3;
+use bevy::color::Alpha;
+use bevy::color::palettes::css::GHOST_WHITE;
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
+use std::time::Duration;
 
 #[derive(Component)]
 pub struct Dmd;
 
-#[derive(Bundle)]
-struct DmdBundle {
-    node: Node,
-    //sprite: Sprite,
-    transform: Transform,
-    boxshadow: BoxShadow,
-    backgroundcolor: BackgroundColor,
-    // translate: Translate,
-    //global_transform: GlobalTransform,
-    //    visibility: Visibility,
-    //    wheel: Wheel,
-    //inherited_visibility: InheritedVisibility,
-    visibility: Visibility,
-    text: Text,
-    text_font: TextFont,
-    text_color: TextColor,
-    text_layout: TextLayout,
-    // table_text: TableText,
-    //text_bundle: Node,
-    dmd: Dmd,
-}
+#[derive(Component)]
+struct DmdText;
 
-const DMD_WIDTH: f32 = 512.;
-const DMD_HEIGHT: f32 = 128.;
+/// How long the keys bar stays fully visible after the last key activity.
+const VISIBLE_SECS: f32 = 2.5;
+/// Time to fade fully in or out.
+const FADE_SECS: f32 = 0.3;
+/// Background opacity of the bar when fully faded in.
+const BG_ALPHA: f32 = 0.5;
 
 pub(crate) fn dmd_plugin(app: &mut App) {
     app.add_systems(Startup, create_dmd);
     app.add_systems(Update, dmd_update.run_if(in_state(LoadingState::Ready)));
 }
 
+/// Fade the keys bar in while keys are being pressed and out a short moment after.
 fn dmd_update(
-    mut dmd_query: Query<(&mut Node, &mut Visibility), With<Dmd>>,
-    wheel_info: Res<WheelInfo>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
+    keys: Res<ButtonInput<KeyCode>>,
+    time: Res<Time>,
+    mut timer: Local<Timer>,
+    mut fade: Local<f32>,
+    mut bar_query: Query<(&mut BackgroundColor, &mut Visibility), With<Dmd>>,
+    mut text_query: Query<&mut TextColor, With<DmdText>>,
 ) {
-    // TODO should only happen if the window is resized
-    if let Ok(window) = window_query.single() {
-        let width = window.width();
-        let height = window.height();
-        let wheel_size = wheel_info.wheel_size;
-        for (mut node, mut visibility) in dmd_query.iter_mut() {
-            //let (mut node1, mut visibility) = &query.p3().get_single_mut();
-            //println!("node: {:?}", node);
-            node.left = Val::Px((width / 2.) - DMD_WIDTH / 2.);
-            node.top = Val::Px(height - wheel_size - DMD_HEIGHT - BOTTOM_MARGIN);
+    // Any key held or just pressed (re)arms the visibility timer.
+    if keys.get_pressed().next().is_some() {
+        timer.set_duration(Duration::from_secs_f32(VISIBLE_SECS));
+        timer.reset();
+    }
+    timer.tick(time.delta());
 
-            //   node.top = Val::Px((-(height / 2.0)) + wsize + 20.);
-            //transform.translation = Vec3::new(0. - 326.0, (-(height / 2.0)) + wsize + 20., 0.);
-            *visibility = Visibility::Visible;
-        }
+    // Ease the fade factor toward 1 while active, 0 once the timer elapses.
+    let target = if timer.is_finished() { 0.0 } else { 1.0 };
+    let step = time.delta_secs() / FADE_SECS;
+    *fade = if *fade < target {
+        (*fade + step).min(target)
+    } else {
+        (*fade - step).max(target)
+    };
+
+    for (mut bg, mut visibility) in bar_query.iter_mut() {
+        bg.0.set_alpha(BG_ALPHA * *fade);
+        // Skip rendering entirely once fully faded out.
+        *visibility = if *fade <= 0.0 {
+            Visibility::Hidden
+        } else {
+            Visibility::Visible
+        };
+    }
+    for mut color in text_query.iter_mut() {
+        color.0.set_alpha(*fade);
     }
 }
 
-fn create_dmd(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
-    let window = window_query.single().expect("Primary window not found");
-    let window_width = window.width();
-    let window_height = window.height();
-    commands.spawn(DmdBundle {
-        node: Node {
-            width: Val::Px(DMD_WIDTH),
-            height: Val::Px(DMD_HEIGHT),
-            //left: Val::Px(10.),
-            left: Val::Px(window_width / 6.),
-            top: Val::Px(window_height / 2.),
-            border: UiRect::all(Val::Px(2.)),
-            border_radius: BorderRadius::new(
-                // top left
-                Val::Px(40.),
-                // top right
-                Val::Px(40.),
-                // bottom right
-                Val::Px(40.),
-                // bottom left
-                Val::Px(40.),
-            ),
-            ..Default::default()
-        },
-        visibility: Visibility::Hidden,
-        transform: Transform {
-            translation: Vec3::new(
-                window_width - (window_width * 0.60) - 225.,
-                (window_height * 0.25) + 60.,
-                0.,
-            ),
+fn create_dmd(mut commands: Commands) {
+    commands.spawn((
+        // Full-width bar anchored to the bottom, centering its text child.
+        Node {
+            position_type: PositionType::Absolute,
+            bottom: Val::Px(0.),
+            left: Val::Px(0.),
+            width: Val::Percent(100.),
+            padding: UiRect::axes(Val::Px(12.), Val::Px(5.)),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
-
-        boxshadow: BoxShadow (vec![ShadowStyle {
-            color: GOLDENROD.into(),
-            x_offset: Val::Px(0.),
-            y_offset: Val::Px(0.),
-            spread_radius: Val::Px(20.),
-            blur_radius: Val::Px(2.),
-        }]),
-        backgroundcolor: BackgroundColor(Color::srgba(0.5, 0.5, 0.5, 1.0)),
-        dmd: Dmd,
-        text_layout: TextLayout {
-            justify: Justify::Center,
-            linebreak: LineBreak::WordBoundary,
-        },
-        //text_layout: TextLayout::new_with_justify(JustifyText::Center).with_no_wrap(),
-        text: Text::new("Keys       q: quit\n1: open up table description dialog\nleft-shift: scroll backward\nright-shift: scroll forward\nenter: start selected game"),
-        text_font: TextFont {
-            // This font is loaded and will be used instead of the default font.
-            font_size: FontSize::Px(20.0),
-            ..default()
-        },
-        text_color: TextColor::from(GHOST_WHITE),
-        // Set the justification of the Text
-        //.with_text_justify(JustifyText::Center)
-        // Set the style of the TextBundle itself.
-    });
+        // Dark, 50% opaque overlay; starts fully transparent and fades in.
+        BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.0)),
+        // Hidden until the first key press; toggled by dmd_update.
+        Visibility::Hidden,
+        Dmd,
+        children![(
+            Text::new(
+                "q: quit    |    1: table info    |    left-shift / right-shift: scroll    |    enter: launch",
+            ),
+            TextFont {
+                font_size: FontSize::Px(13.0),
+                ..default()
+            },
+            TextColor(GHOST_WHITE.with_alpha(0.0).into()),
+            TextLayout {
+                justify: Justify::Center,
+                linebreak: LineBreak::NoWrap,
+            },
+            DmdText,
+        )],
+    ));
 }
