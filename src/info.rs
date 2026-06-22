@@ -70,7 +70,7 @@ fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
                         children![(
                             Text::new("[No title]"),
                             TextFont {
-                                font_size: FONT_SIZE_TITLE,
+                                font_size: FontSize::Px(FONT_SIZE_TITLE),
                                 ..default()
                             },
                             Label,
@@ -90,7 +90,7 @@ fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
                         children![(
                             Text::new("[no description]"),
                             TextFont {
-                                font_size: FONT_SIZE_BODY,
+                                font_size: FontSize::Px(FONT_SIZE_BODY),
                                 ..default()
                             },
                             BodyNode

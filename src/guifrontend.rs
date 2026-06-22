@@ -228,7 +228,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         app.add_plugins(bevy_dev_tools::fps_overlay::FpsOverlayPlugin {
             config: bevy_dev_tools::fps_overlay::FpsOverlayConfig {
                 text_config: TextFont {
-                    font_size: 8.0,
+                    font_size: FontSize::Px(8.0),
                     ..Default::default()
                 },
                 text_color: Color::WHITE,

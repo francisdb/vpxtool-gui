@@ -127,7 +127,10 @@ pub(crate) fn create_wheels(
             Some(path) => path.clone(),
             None => blank_path.clone(),
         };
-        let wheel_image_handle = asset_server.load_override(wheel_path.clone());
+        let wheel_image_handle = asset_server
+            .load_builder()
+            .override_unapproved()
+            .load(wheel_path.clone());
         loading_data
             .loading_assets
             .push(wheel_image_handle.clone().into());

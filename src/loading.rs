@@ -85,7 +85,7 @@ pub(crate) fn loading_plugin(app: &mut App) {
     app.add_systems(
         Update,
         (update_loading_data, update_loading_screen).chain().run_if(
-            in_state(LoadingState::LoadingTables).or(in_state(LoadingState::LoadingImages)),
+            in_state(LoadingState::LoadingTables).or_else(in_state(LoadingState::LoadingImages)),
         ),
     );
     app.add_systems(OnEnter(LoadingState::LoadingTables), setup_loading_screen);
@@ -260,7 +260,7 @@ fn setup_loading_screen(mut commands: Commands, dialog: ResMut<LoadingDialogBox>
                     parent.spawn((
                         Text::new(title),
                         TextFont {
-                            font_size: 30.0,
+                            font_size: FontSize::Px(30.0),
                             ..default()
                         },
                         TextColor::from(Color::WHITE),
@@ -274,7 +274,7 @@ fn setup_loading_screen(mut commands: Commands, dialog: ResMut<LoadingDialogBox>
                     parent.spawn((
                         Text::new(text),
                         TextFont {
-                            font_size: 16.0,
+                            font_size: FontSize::Px(16.0),
                             ..default()
                         },
                         TextColor::from(Color::WHITE),
