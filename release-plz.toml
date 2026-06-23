@@ -1,6 +1,0 @@
-# This is an application binary, not a library, so it is never published to
-# crates.io. `git_only` makes release-plz determine the version from git tags
-# (default `v{{ version }}`) and skip `cargo publish`, while still opening
-# version/changelog PRs and creating git tags + GitHub releases.
-[workspace]
-git_only = true
