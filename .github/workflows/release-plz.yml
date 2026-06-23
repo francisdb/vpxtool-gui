@@ -1,0 +1,64 @@
+name: Release-plz
+
+# Automates versioning: the PR job opens/updates a "release" PR with the next
+# version and changelog; merging it makes the release job create the git tag and
+# GitHub release. The package has `publish = false`, so nothing is sent to
+# crates.io. The created tag triggers the binary build in release.yml.
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Create the git tag and GitHub release for the merged version bump.
+  release-plz-release:
+    name: Release-plz release
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'francisdb' && github.actor != 'dependabot[bot]' }}
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          # release-plz uses the PAT below (GITHUB_TOKEN env) for its git push, so
+          # the pushed tag triggers release.yml (the default GITHUB_TOKEN cannot
+          # trigger other workflow runs). Don't persist checkout's own credentials.
+          persist-credentials: false
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.VPXTOOL_GUI_RELEASE_PLZ_TOKEN }}
+
+  # Open/update a PR with the next version and changelog.
+  release-plz-pr:
+    name: Release-plz PR
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'francisdb' && github.actor != 'dependabot[bot]' }}
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

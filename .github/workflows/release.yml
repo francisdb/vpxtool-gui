@@ -1,8 +1,10 @@
 name: Release build
+# Builds the distributable binaries for a version tag created by release-plz and
+# attaches them to the matching GitHub release. Tag-only: no per-commit builds.
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 permissions:
   contents: write
 jobs:
@@ -31,18 +33,17 @@ jobs:
         if: contains(matrix.platform.os, 'ubuntu')
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Install minimal stable with clippy and rustfmt
+      - name: Install minimal stable
         uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2.9.1
+      # No rust-cache here on purpose: releases are infrequent, so a cache would
+      # mostly be evicted between releases while consuming the repo cache budget
+      # that the CI workflow needs.
       - name: Build
         run: cargo build --locked --release
       - name: Set full archive name as env variable
         shell: bash
         run: |
-          VERSION=$(if [[ $GITHUB_REF == refs/tags/* ]]; then echo ${GITHUB_REF#refs/tags/} | sed 's/\//-/g'; else git rev-parse --short $GITHUB_SHA; fi)
+          VERSION=${GITHUB_REF#refs/tags/}
           EXTENSION="tar.gz"
           if [[ "${{ matrix.platform.os }}" == "windows-latest" ]]; then
             EXTENSION="zip"
@@ -62,15 +63,10 @@ jobs:
             tar czvf $ARCHIVE_NAME $ARCHIVE_DIR
           fi
           rm -rf $ARCHIVE_DIR
-      - name: Publish release artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ env.ARCHIVE_NAME }}
-          path: ${{ env.ARCHIVE_NAME }}
-          if-no-files-found: error
-        if: startsWith( github.ref, 'refs/tags/v' ) == false
-#      - name: Publish GitHub release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          files: "vpxtool*"
-#        if: startsWith( github.ref, 'refs/tags/v' )
+      - name: Upload archive to the GitHub release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Attach the asset to the release release-plz already created for this
+        # tag; --clobber replaces it on re-runs and leaves the notes untouched.
+        run: gh release upload "${GITHUB_REF#refs/tags/}" "$ARCHIVE_NAME" --clobber --repo "$GITHUB_REPOSITORY"
