@@ -1,6 +1,6 @@
 use crate::guifrontend::VpxTables;
-use crate::list::SelectedItem;
 use crate::loading::LoadingState;
+use crate::mediascroller::SelectedItem;
 use bevy::app::{App, Update};
 use bevy::input::ButtonInput;
 use bevy::log::debug;
@@ -87,5 +87,25 @@ pub(crate) fn wrap_around(n: i16, max: usize) -> usize {
         ((n % max as i16 + max as i16) % max as i16) as usize
     } else {
         n as usize
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn test_wrap() {
+        assert_eq!(wrap_around(0, 0), 0);
+        assert_eq!(wrap_around(0, 10), 0);
+        assert_eq!(wrap_around(10, 0), 0);
+        assert_eq!(wrap_around(10, 10), 0);
+        assert_eq!(wrap_around(11, 10), 1);
+        assert_eq!(wrap_around(-1, 10), 9);
+        assert_eq!(wrap_around(-10, 10), 0);
+        assert_eq!(wrap_around(-11, 10), 9);
+        assert_eq!(wrap_around(-123, 3), 0);
+        assert_eq!(wrap_around(91, 9), 1);
     }
 }
