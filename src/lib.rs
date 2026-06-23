@@ -8,7 +8,6 @@ mod keys_bar;
 mod list;
 mod loading;
 mod music;
-mod pipelines;
 mod process;
 mod wheel;
 mod windowing;

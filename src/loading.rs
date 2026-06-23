@@ -1,6 +1,5 @@
 use crate::event_channel::{ChannelExternalEvent, StreamSender};
 use crate::guifrontend::Config;
-use crate::pipelines::{PipelinesReady, PipelinesReadyPlugin};
 use crate::wheel::{AssetPaths, LoadWheelsSystem};
 use bevy::image::Image;
 use bevy::prelude::*;
@@ -49,7 +48,7 @@ pub(crate) struct LoadingData {
     pub(crate) loading_assets: Vec<UntypedHandle>,
     // Number of frames that everything needs to be ready for.
     // This is to prevent going into the fully loaded state in instances
-    // where there might be a some frames between certain loading/pipelines action.
+    // where there might be a few frames between certain loading actions.
     confirmation_frames_target: usize,
     // Current number of confirmation frames.
     confirmation_frames_count: usize,
@@ -74,7 +73,6 @@ impl LoadingData {
 }
 
 pub(crate) fn loading_plugin(app: &mut App) {
-    app.add_plugins(PipelinesReadyPlugin);
     app.add_message::<TableLoadingEvent>();
     app.insert_resource(LoadingData::new(5));
     app.insert_resource(LoadingDialogBox {
@@ -101,7 +99,6 @@ fn update_loading_data(
     mut next_state: ResMut<NextState<LoadingState>>,
     current_state: ResMut<State<LoadingState>>,
     asset_server: Res<AssetServer>,
-    pipelines_ready: Res<PipelinesReady>,
     asset_paths: Res<AssetPaths>,
     mut table_loading_event_reader: MessageReader<TableLoadingEvent>,
 ) {
@@ -141,9 +138,8 @@ fn update_loading_data(
                 loading_data.assets_loading_started = true;
                 loading_data.assets_loading_finished = false;
             }
-            if !loading_data.loading_assets.is_empty() || !pipelines_ready.0 {
-                // If we are still loading assets / pipelines are not fully compiled,
-                // we reset the confirmation frame count.
+            if !loading_data.loading_assets.is_empty() {
+                // If we are still loading assets, we reset the confirmation frame count.
                 loading_data.confirmation_frames_count = 0;
 
                 // Go through each asset and verify their load states.
@@ -183,10 +179,9 @@ fn update_loading_data(
                     }
                 }
 
-                // If there are no more assets being monitored, and pipelines
-                // are compiled, then start counting confirmation frames.
-                // Once enough confirmations have passed, everything will be
-                // considered to be fully loaded.
+                // If there are no more assets being monitored, start counting
+                // confirmation frames. Once enough confirmations have passed,
+                // everything will be considered to be fully loaded.
             } else {
                 if loading_data.assets_loading_started && !loading_data.assets_loading_finished {
                     info!("Wheel assets loaded.");
