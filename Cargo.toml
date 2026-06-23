@@ -2,9 +2,6 @@
 name = "vpxtool_gui"
 version = "0.1.0"
 edition = "2024"
-# This is an application binary, not a library; never publish to crates.io.
-# release-plz still creates git tags and GitHub releases.
-publish = false
 
 [[bin]]
 name = "vpxtool-gui"
