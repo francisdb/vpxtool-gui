@@ -1,9 +1,9 @@
-use crate::dmd::dmd_plugin;
 use crate::event_channel::{ChannelExternalEvent, ExternalEvent, StreamSender};
 use crate::flippers::flipper_plugin;
 use crate::gradient_background::setup_gradient_background;
 use crate::info::info_plugin;
 use crate::input::{TableSelectionChanged, input_plugin};
+use crate::keys_bar::keys_bar_plugin;
 use crate::list::{SelectedItem, display_table_line, list_plugin};
 use crate::loading::{LoadingState, TableLoadingEvent};
 use crate::loading::{loading_plugin, mark_tables_loaded};
@@ -213,7 +213,7 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         .add_plugins((
             wheel_plugin,
             flipper_plugin,
-            dmd_plugin,
+            keys_bar_plugin,
             list_plugin,
             info_plugin,
             input_plugin,
