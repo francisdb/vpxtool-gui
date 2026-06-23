@@ -197,16 +197,26 @@ fn update_scroller(
         );
     }
 
-    let animating = (scroll.target - scroll.current).abs() > 0.001;
+    let center_w = window.width() * 0.6;
+    let center_h = center_w / 1.5;
+    let spacing = window.width() * 0.62;
+    let recycle_limit = HALF_POOL as f32 + 0.5;
+
+    // Ease the position towards the target (frame-rate independent exponential
+    // ease-out). Snap only within half a pixel, so there is no visible jump at
+    // the end of the animation.
+    let snap = (0.5 / spacing).max(f32::EPSILON);
+    let animating = (scroll.target - scroll.current).abs() > snap;
     // Nothing to do once settled and the selection hasn't changed.
     if !animating && !changed && *initialized {
         return;
     }
-
     if animating {
-        let t = 1.0 - (-SCROLL_SPEED * time.delta_secs()).exp();
-        scroll.current += (scroll.target - scroll.current) * t;
-        if (scroll.target - scroll.current).abs() < 0.01 {
+        let target = scroll.target;
+        scroll
+            .current
+            .smooth_nudge(&target, SCROLL_SPEED, time.delta_secs());
+        if (scroll.target - scroll.current).abs() < snap {
             scroll.current = scroll.target;
         }
     }
@@ -222,11 +232,6 @@ fn update_scroller(
             shift = rings as i64 * count as i64;
         }
     }
-
-    let center_w = window.width() * 0.6;
-    let center_h = center_w / 1.5;
-    let spacing = window.width() * 0.62;
-    let recycle_limit = HALF_POOL as f32 + 0.5;
 
     for (mut slot, mut sprite, mut transform, mut visibility) in slots.iter_mut() {
         if shift != 0 {
