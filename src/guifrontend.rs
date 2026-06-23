@@ -244,28 +244,19 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
             //bevy::diagnostic::EntityCountDiagnosticsPlugin::default(),
             // Uncomment this to add an asset count diagnostics:
             //bevy::asset::diagnostic::AssetCountDiagnosticsPlugin::<Texture>::default(),
-            // Uncomment this to add system info diagnostics:
-            //bevy::diagnostic::SystemInformationDiagnosticsPlugin::default(),
-            // we have our custom SystemInformationDiagnosticsPlugin that adds process cpu and mem usage
-            crate::diagnostic::SystemInformationDiagnosticsPlugin,
+            // System info diagnostics: as of bevy 0.19 the built-in plugin also
+            // reports process cpu/mem, so we no longer need a custom copy.
+            bevy::diagnostic::SystemInformationDiagnosticsPlugin,
+            // Bevy 0.19's on-screen diagnostics overlay (a draggable, collapsible window).
+            bevy_dev_tools::diagnostics_overlay::DiagnosticsOverlayPlugin,
             // Uncomment this to add rendering diagnostics:
             //bevy::render::diagnostic::RenderDiagnosticsPlugin::default(),
         ));
         app.add_plugins(crate::debug_window_labels::plugin)
             //app.add_plugins(bevy_dev_tools::ui_debug_overlay::DebugUiPlugin)
-            .add_systems(Update, toggle_overlay);
-        app.add_plugins(bevy_dev_tools::fps_overlay::FpsOverlayPlugin {
-            config: bevy_dev_tools::fps_overlay::FpsOverlayConfig {
-                text_config: TextFont {
-                    font_size: FontSize::Px(8.0),
-                    ..Default::default()
-                },
-                text_color: Color::WHITE,
-                enabled: true,
-                ..Default::default()
-            },
-        })
-        .add_systems(Update, toggle_fps);
+            .add_systems(Update, toggle_overlay)
+            .add_systems(Startup, spawn_diagnostics_overlay)
+            .add_systems(Update, toggle_diagnostics_overlay);
     }
 
     app.run();
@@ -288,14 +279,46 @@ fn toggle_overlay(
 }
 
 #[cfg(debug_assertions)]
-// The system that will enable/disable the debug outlines around the nodes
-fn toggle_fps(
+/// Spawn the bevy 0.19 diagnostics overlay window: FPS, frame time and process cpu/mem.
+fn spawn_diagnostics_overlay(mut commands: Commands) {
+    use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, SystemInformationDiagnosticsPlugin};
+    use bevy_dev_tools::diagnostics_overlay::{
+        DiagnosticsOverlay, DiagnosticsOverlayItem, DiagnosticsOverlayStatistic,
+    };
+    commands.spawn(DiagnosticsOverlay::new(
+        "Diagnostics",
+        vec![
+            FrameTimeDiagnosticsPlugin::FPS.into(),
+            FrameTimeDiagnosticsPlugin::FRAME_TIME.into(),
+            DiagnosticsOverlayItem {
+                path: SystemInformationDiagnosticsPlugin::PROCESS_CPU_USAGE,
+                statistic: DiagnosticsOverlayStatistic::Smoothed,
+                precision: 1,
+            },
+            DiagnosticsOverlayItem {
+                path: SystemInformationDiagnosticsPlugin::PROCESS_MEM_USAGE,
+                statistic: DiagnosticsOverlayStatistic::Smoothed,
+                precision: 1,
+            },
+        ],
+    ));
+}
+
+#[cfg(debug_assertions)]
+/// Toggle the diagnostics overlay window visibility with F.
+fn toggle_diagnostics_overlay(
     input: Res<ButtonInput<KeyCode>>,
-    mut options: ResMut<bevy_dev_tools::fps_overlay::FpsOverlayConfig>,
+    mut overlays: Query<
+        &mut Visibility,
+        With<bevy_dev_tools::diagnostics_overlay::DiagnosticsOverlay>,
+    >,
 ) {
-    info_once!("The debug outlines are enabled, press Space to turn them on/off");
     if input.just_pressed(KeyCode::KeyF) {
-        // The toggle method will enable the debug_overlay if disabled and disable if enabled
-        options.enabled = !options.enabled;
+        for mut visibility in &mut overlays {
+            *visibility = match *visibility {
+                Visibility::Hidden => Visibility::Inherited,
+                _ => Visibility::Hidden,
+            };
+        }
     }
 }
