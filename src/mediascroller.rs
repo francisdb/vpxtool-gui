@@ -55,7 +55,7 @@ const HALF_POOL: i32 = VISIBLE_SIDE + BUFFER;
 /// Total number of recycled sprites.
 const POOL: i32 = HALF_POOL * 2 + 1;
 /// How quickly the scroll eases towards the selection (higher is snappier).
-const SCROLL_SPEED: f32 = 14.0;
+const SCROLL_SPEED: f32 = 7.0;
 /// Fallback image (in `assets/`) used when a table has no `media/table.jpg`.
 const FALLBACK_IMAGE: &str = "generic_table.png";
 
