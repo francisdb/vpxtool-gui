@@ -1,7 +1,6 @@
 use crate::event_channel::{ChannelExternalEvent, StreamSender};
 use crate::guifrontend::Config;
-use crate::mediascroller::{AssetPaths, LoadImagesSystem};
-use bevy::image::Image;
+use crate::mediascroller::LoadImagesSystem;
 use bevy::prelude::*;
 use bevy_asset::{AssetServer, RecursiveDependencyLoadState, UntypedHandle};
 use crossbeam_channel::Sender;
@@ -99,7 +98,6 @@ fn update_loading_data(
     mut next_state: ResMut<NextState<LoadingState>>,
     current_state: ResMut<State<LoadingState>>,
     asset_server: Res<AssetServer>,
-    asset_paths: Res<AssetPaths>,
     mut table_loading_event_reader: MessageReader<TableLoadingEvent>,
 ) {
     for event in table_loading_event_reader.read() {
@@ -144,22 +142,12 @@ fn update_loading_data(
 
                 // Go through each asset and verify their load states.
                 // Any assets that are loaded are then added to the pop list for later removal.
+                dialog.text = format!("{} remaining", loading_data.loading_assets.len());
                 let mut pop_list: Vec<usize> = Vec::new();
                 for (index, asset) in loading_data.loading_assets.iter().enumerate() {
-                    // log asset name
-                    // info!("asset {:?}", asset);
                     if let Some((_, _, RecursiveDependencyLoadState::Loaded)) =
                         asset_server.get_load_states(asset)
                     {
-                        let id = asset.id().typed_unchecked::<Image>();
-                        // Since for example the default asset is shared this will repeatedly the last
-                        // path that was loaded.
-                        // info!("loading {}", asset_paths.paths.get(&id).cloned().unwrap());
-                        dialog.text = format!(
-                            "{} {}",
-                            loading_data.loading_assets.len(),
-                            asset_paths.paths.get(&id).cloned().unwrap()
-                        );
                         pop_list.push(index);
                     }
                 }
