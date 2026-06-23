@@ -1,0 +1,28 @@
+name: Release Please
+
+# Automates releases from Conventional Commits, without ever invoking cargo:
+# - opens/updates a Release PR with the version bump + CHANGELOG.md
+# - on merge, pushes a vX.Y.Z tag, which triggers the binary build in release.yml
+#
+# A PAT is used so the pushed tag can trigger release.yml; the default
+# GITHUB_TOKEN cannot trigger other workflow runs.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'francisdb'
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.VPXTOOL_GUI_RELEASE_PLZ_TOKEN }}
+          release-type: rust
