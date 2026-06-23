@@ -1,15 +1,13 @@
 use crate::event_channel::{ChannelExternalEvent, ExternalEvent, StreamSender};
-use crate::flippers::flipper_plugin;
 use crate::gradient_background::setup_gradient_background;
 use crate::info::info_plugin;
 use crate::input::{TableSelectionChanged, input_plugin};
 use crate::keys_bar::keys_bar_plugin;
-use crate::list::{SelectedItem, display_table_line, list_plugin};
 use crate::loading::{LoadingState, TableLoadingEvent};
 use crate::loading::{loading_plugin, mark_tables_loaded};
+use crate::mediascroller::{SelectedItem, display_table_line, mediascroller_plugin};
 use crate::music::{ControlMusicEvent, music_plugin, resume_music, suspend_music};
 use crate::process::do_launch;
-use crate::wheel::wheel_plugin;
 use crate::windowing;
 use crate::windowing::WindowingPlugin;
 use bevy::platform::collections::HashSet;
@@ -211,10 +209,8 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         .add_plugins(crate::event_channel::plugin)
         .add_plugins(music_plugin)
         .add_plugins((
-            wheel_plugin,
-            flipper_plugin,
+            mediascroller_plugin,
             keys_bar_plugin,
-            list_plugin,
             info_plugin,
             input_plugin,
         ))

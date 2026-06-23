@@ -1,6 +1,6 @@
 use crate::event_channel::{ChannelExternalEvent, StreamSender};
 use crate::guifrontend::Config;
-use crate::wheel::{AssetPaths, LoadWheelsSystem};
+use crate::mediascroller::{AssetPaths, LoadImagesSystem};
 use bevy::image::Image;
 use bevy::prelude::*;
 use bevy_asset::{AssetServer, RecursiveDependencyLoadState, UntypedHandle};
@@ -132,7 +132,7 @@ fn update_loading_data(
             dialog.title = "Loading images".to_string();
             if !loading_data.assets_loading_started && !loading_data.loading_assets.is_empty() {
                 info!(
-                    "Wheel assets loading... (queued: {})",
+                    "Table images loading... (queued: {})",
                     loading_data.loading_assets.len()
                 );
                 loading_data.assets_loading_started = true;
@@ -184,7 +184,7 @@ fn update_loading_data(
                 // everything will be considered to be fully loaded.
             } else {
                 if loading_data.assets_loading_started && !loading_data.assets_loading_finished {
-                    info!("Wheel assets loaded.");
+                    info!("Table images loaded.");
                     loading_data.assets_loading_finished = true;
                 }
                 loading_data.confirmation_frames_count += 1;
@@ -212,12 +212,12 @@ pub(crate) fn mark_tables_loaded(next_state: &mut NextState<LoadingState>) {
 
 fn load_images(
     mut commands: Commands,
-    load_wheels_system: Res<LoadWheelsSystem>,
+    load_images_system: Res<LoadImagesSystem>,
     mut loading_data: ResMut<LoadingData>,
 ) {
     loading_data.assets_loading_started = false;
     loading_data.assets_loading_finished = false;
-    commands.run_system(load_wheels_system.0);
+    commands.run_system(load_images_system.0);
 }
 
 fn setup_loading_screen(mut commands: Commands, dialog: ResMut<LoadingDialogBox>) {

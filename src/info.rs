@@ -1,6 +1,6 @@
 use crate::guifrontend::VpxTables;
 use crate::input::TableSelectionChanged;
-use crate::list::{SelectedItem, display_table_line};
+use crate::mediascroller::{SelectedItem, display_table_line};
 use bevy::input::ButtonInput;
 use bevy::input::mouse::{MouseScrollUnit, MouseWheel};
 use bevy::picking::hover::HoverMap;
