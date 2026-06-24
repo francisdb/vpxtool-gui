@@ -12,6 +12,8 @@ use crate::windowing;
 use crate::windowing::WindowingPlugin;
 use bevy::platform::collections::HashSet;
 use bevy::prelude::*;
+use bevy::render::RenderPlugin;
+use bevy::render::settings::{InstanceFlags, RenderCreation, WgpuSettings};
 use bevy::window::*;
 use bevy_asset::UnapprovedPathMode;
 use std::io;
@@ -196,6 +198,19 @@ pub fn guifrontend(config: ResolvedConfig) -> io::Result<ExitCode> {
         .add_message::<TableSelectionChanged>()
         .add_plugins(
             DefaultPlugins
+                .set(RenderPlugin {
+                    // Don't request the Vulkan validation layer: on some drivers
+                    // (e.g. RADV) it spams benign validation errors at startup,
+                    // and it's a dev tool we don't ship. Other flags keep their
+                    // defaults (DEBUG labels in debug builds). No effect in
+                    // release, where validation is already off.
+                    render_creation: RenderCreation::Automatic(Box::new(WgpuSettings {
+                        instance_flags: InstanceFlags::default()
+                            .difference(InstanceFlags::VALIDATION),
+                        ..default()
+                    })),
+                    ..default()
+                })
                 .set(WindowPlugin {
                     primary_window: Some(playfield_window),
                     ..Default::default()
