@@ -3777,6 +3777,7 @@ dependencies = [
  "moxcms",
  "num-traits",
  "png",
+ "qoi",
  "ravif",
  "rayon",
  "zune-core",
@@ -5246,6 +5247,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "qoi"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f6d64c71eb498fe9eae14ce4ec935c555749aef511cca85b5568910d6e48001"
+dependencies = [
+ "bytemuck",
+]
+
+[[package]]
 name = "quick-error"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6505,9 +6515,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.33.3"
+version = "0.33.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f307ba9ca6c49cd279bb6f06cd1c820431c8cf87af590d0d0ec1f18f388c67eb"
+checksum = "848e0022373937e94d4ad17b3e6b79da6f93aa9927199b1804728d8f0eb672a4"
 dependencies = [
  "base64",
  "chrono",
