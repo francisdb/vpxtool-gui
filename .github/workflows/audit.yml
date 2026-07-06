@@ -1,9 +1,11 @@
 name: Security audit
 
 on:
-  schedule:
-    # Run every Monday at 06:00 UTC.
-    - cron: '0 6 * * 1'
+  # Schedule disabled: the weekly run kept filing issues for transitive
+  # advisories we cannot act on.
+  # schedule:
+  #   # Run every Monday at 06:00 UTC.
+  #   - cron: '0 6 * * 1'
   workflow_dispatch:
 
 permissions:
