@@ -6563,9 +6563,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vpin"
-version = "0.26.9"
+version = "0.26.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91aae2bac97dbc02ddfcdab810ff722b65983ccd0d705035ff862c7d3f298cbe"
+checksum = "37b6152e85ce41818b8e755dbbbf38823a69cae4314e4b0b072fdc1ddaeda5f2"
 dependencies = [
  "byteorder",
  "bytes",
@@ -6590,9 +6590,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.33.4"
+version = "0.33.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "848e0022373937e94d4ad17b3e6b79da6f93aa9927199b1804728d8f0eb672a4"
+checksum = "a0c9a7f4eccb3dd560953ca7087196c2ced6c49b15e448130a019f21e731e9bd"
 dependencies = [
  "base64",
  "chrono",
