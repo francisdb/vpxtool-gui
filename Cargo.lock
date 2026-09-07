@@ -6688,9 +6688,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.33.9"
+version = "0.33.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26aebba78aeee2d6d1c7a0a6f2cdf919147d3f116861738a7f0949e8a24ff6e0"
+checksum = "57f52edbd72322ea0e4455feba46af51d6e34895b7539f9988a43597866cf8c9"
 dependencies = [
  "base64 0.23.0",
  "chrono",
