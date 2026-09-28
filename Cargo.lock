@@ -2242,9 +2242,9 @@ dependencies = [
 
 [[package]]
 name = "cfb"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a347dcabdae9c31b0825fd6a8bed285ec9c2acb89c47827126d52fa4f59cece3"
+checksum = "0f13298d9178622b7916ec5d01d470425c04273c8ed07e87b1c38b34c4f4612b"
 dependencies = [
  "fnv",
  "uuid",
@@ -6690,9 +6690,9 @@ dependencies = [
 
 [[package]]
 name = "vbscript"
-version = "0.3.1"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea080a273efbe40a4fdf62badd457c75916f2b0db6f2d95feb89d2ccbcf7eb55"
+checksum = "67b57345e7b7ef0a88a4d280da5f932bb4331b9ffe154237de99e619e776c7c9"
 dependencies = [
  "logos",
 ]
@@ -6711,9 +6711,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vpin"
-version = "0.33.1"
+version = "0.37.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "114de74df67d6608375da931b21bfa258eff33e2f8e6e76427870d4ccfee75de"
+checksum = "1b64629baa2ac2f943b2b9d8ee98a28979213aac8f8af1912f921bdc1786f591"
 dependencies = [
  "bytes",
  "cfb",
@@ -6732,13 +6732,14 @@ dependencies = [
  "vbscript",
  "wavefront-obj-io",
  "weezl 0.2.1",
+ "zmij",
 ]
 
 [[package]]
 name = "vpxtool"
-version = "0.34.1"
+version = "0.34.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89d4a57ed59f93d5aae278862ca9a92e1498812ad3aa3e7598757f67bc12874d"
+checksum = "4dfdfc3d6fcf24ab91dba870eeae484823f8731c27bbfebbd5b53e7754575330"
 dependencies = [
  "base64 0.23.0",
  "chrono",
@@ -6870,9 +6871,12 @@ dependencies = [
 
 [[package]]
 name = "wavefront-obj-io"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8303f48c4cd4d0e4cc8b376b83dee11ce93c95d7d28f829fd213a76fcb3b538"
+checksum = "01cf40b6eb09a24cc90e3d9ab03eca80b96b2d248a0c09a6fdc4e72558ce6cc1"
+dependencies = [
+ "zmij",
+]
 
 [[package]]
 name = "wayland-backend"
@@ -7839,9 +7843,9 @@ checksum = "5431d5661c32445236631278f27946e444ddafe4684cac70b185272d4f9c52d5"
 
 [[package]]
 name = "zmij"
-version = "1.0.21"
+version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8848ee67ecc8aedbaf3e4122217aff892639231befc6a1b58d29fff4c2cabaa"
+checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[package]]
 name = "zopfli"
