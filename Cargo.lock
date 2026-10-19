@@ -6879,9 +6879,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vpin"
-version = "0.38.4"
+version = "0.39.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7179f18f6d015230d88083b724b0810cc2b40d3497101afd6705dbd5365e9e6"
+checksum = "1125c9eea4cfea4ca8d6c7bb02c9ab666c3a0dfb68ccb52141777adfc607550a"
 dependencies = [
  "bytes",
  "cfb",
@@ -6909,9 +6909,9 @@ dependencies = [
 
 [[package]]
 name = "vpxtool"
-version = "0.37.1"
+version = "0.38.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f8d576692d441721c3ad980a869a14ca3023697d996292943f1a7c93e997645"
+checksum = "2a8c08ec6aa6a985a96ba8f2b8743391a60145d3ceb5e01d2dd2182771bf4c4c"
 dependencies = [
  "base64 0.23.0",
  "chrono",
@@ -7996,14 +7996,15 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "8.6.0"
+version = "9.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d04a6b5381502aa6087c94c669499eb1602eb9c5e8198e534de571f7154809b"
+checksum = "6e04976da629d3b04204ba8105b396a193af8ad2583b2c79bfb3ab8af580a11e"
 dependencies = [
  "crc32fast",
  "flate2",
  "indexmap",
  "memchr",
+ "nix",
  "typed-path",
  "zopfli",
 ]
