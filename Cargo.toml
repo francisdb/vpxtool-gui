@@ -11,9 +11,10 @@ path = "src/main.rs"
 [dependencies]
 vpxtool = "0.38.0"
 # `jpeg` is not in bevy's default features; table media (media/table.jpg) needs it.
-bevy = { version = "0.19.0", features = ["jpeg"] }
-bevy_asset = "0.19.0"
-bevy_dev_tools = "0.19.0"
+bevy = { version = "0.20.0", features = ["jpeg"] }
+bevy_asset = "0.20.0"
+# `diagnostics_overlay` is gated behind `render` since 0.20.
+bevy_dev_tools = { version = "0.20.0", features = ["render"] }
 #bevy_asset_loader = "0.22.0"
 crossbeam-channel = "0.5.15"
 is_executable = "1.0.5"
