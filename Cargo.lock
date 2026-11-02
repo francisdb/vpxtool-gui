@@ -915,7 +915,7 @@ dependencies = [
  "const-fnv1a-hash",
  "log",
  "serde",
- "sysinfo",
+ "sysinfo 0.39.6",
 ]
 
 [[package]]
@@ -6568,6 +6568,20 @@ dependencies = [
  "ntapi",
  "objc2-core-foundation",
  "objc2-io-kit",
+ "windows",
+]
+
+[[package]]
+name = "sysinfo"
+version = "0.40.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "110e37d98880fd804cd47509b90a8444f7aaaab655ae625e83cd442a8bc2ebf2"
+dependencies = [
+ "libc",
+ "memchr",
+ "ntapi",
+ "objc2-core-foundation",
+ "objc2-io-kit",
  "objc2-open-directory",
  "windows",
 ]
@@ -7157,7 +7171,7 @@ dependencies = [
  "crossbeam-channel",
  "is_executable",
  "pretty_assertions",
- "sysinfo",
+ "sysinfo 0.40.0",
  "vpxtool",
 ]
 

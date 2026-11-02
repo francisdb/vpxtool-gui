@@ -18,7 +18,7 @@ bevy_dev_tools = { version = "0.20.0", features = ["render"] }
 #bevy_asset_loader = "0.22.0"
 crossbeam-channel = "0.5.15"
 is_executable = "1.0.5"
-sysinfo = "0.39.3"
+sysinfo = "0.40.0"
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
